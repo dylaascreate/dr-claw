@@ -257,7 +257,7 @@ export default function DrawerTrack({ show, onClose, onSubmitted, showToast }) {
         {/* STEP 1 — Measurements */}
         {STEPS[step] === 'Measurements' && (
           <Section title="Today's readings" hint="Skip any you don't have right now.">
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 gap-3">
               {CONDITION_PROFILE.measurements.map(m => (
                 <label key={m.key} className="bg-white border border-brown-100 rounded-2xl p-3 shadow-sm">
                   <p className="text-xs font-semibold text-brown-600">{m.label}</p>
