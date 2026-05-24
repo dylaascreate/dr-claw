@@ -7,7 +7,7 @@ export const Route = createFileRoute("/dashboard")({
   component: DashboardPage,
   head: () => ({
     meta: [
-      { title: "CareTrack — Chronic Care Portal" },
+      { title: "Dr Claw — Chronic Care Portal" },
       { name: "description", content: "Your personalized chronic care dashboard." },
     ],
     links: [

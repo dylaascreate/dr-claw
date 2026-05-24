@@ -15,7 +15,7 @@ export default function LeftPanel() {
           </svg>
         </div>
         <div>
-          <h2 className="text-xl font-bold tracking-tight text-white/90" style={{ fontFamily: "'Inter', sans-serif" }}>CareTrack</h2>
+          <h2 className="text-xl font-bold tracking-tight text-white/90" style={{ fontFamily: "'Inter', sans-serif" }}>Dr Claw</h2>
           <p className="text-xs text-white/50">Chronic Disease Management</p>
         </div>
       </div>
@@ -25,13 +25,13 @@ export default function LeftPanel() {
         <span className="inline-block px-3 py-1 bg-white/10 rounded-full text-xs font-semibold tracking-wider text-white/80 border border-white/20">DEMO ENVIRONMENT</span>
         <h1 className="text-5xl leading-tight font-light text-white">Manage your chronic conditions with confidence.</h1>
         <p className="text-white/70 text-base leading-relaxed">
-          Welcome to Joel's care dashboard. Track specialist appointments, monitor lab results, submit insurance claims, and get personalised guidance from <strong>Aura AI</strong> — your chronic care companion.
+          Welcome to Joel's care dashboard. Track specialist appointments, monitor lab results, submit insurance claims, and get personalised guidance from <strong>Dr Claw</strong> — your chronic care companion.
         </p>
 
         {/* Feature pills */}
         <div className="grid grid-cols-2 gap-3 pt-4">
           <div className="p-3 bg-white/5 rounded-xl border border-white/10 hover:bg-white/10 transition-colors">
-            <h4 className="text-sm font-semibold text-white/90">Aura Care Assistant</h4>
+            <h4 className="text-sm font-semibold text-white/90">Dr Claw Assistant</h4>
             <p className="text-xs text-white/60 mt-1">AI-guided chronic disease queries & medication reminders.</p>
           </div>
           <div className="p-3 bg-white/5 rounded-xl border border-white/10 hover:bg-white/10 transition-colors">

@@ -80,18 +80,18 @@ const INITIAL_CLAIMS = [
 
 const INITIAL_MESSAGES = [
   {
-    sender: 'aura',
-    text: "Hi Joel! 👋 I'm Aura, your chronic care assistant. How can I support you today?",
+    sender: 'drclaw',
+    text: "Hi Joel! 👋 I'm Dr Claw, your chronic care assistant. How can I support you today?",
   },
   {
-    sender: 'aura',
+    sender: 'drclaw',
     text: "You have a Diabetes Review with Dr. Sarah Lim on Friday. Your last HbA1c was 7.2% — shall I pull up your trend?",
   },
 ];
 
 // ── AI response stubs ─────────────────────────────────────────────────────────
 
-function getAuraResponse(message) {
+function getDrClawResponse(message) {
   const lower = message.toLowerCase();
   if (lower.includes('hba1c') || lower.includes('diabetes') || lower.includes('sugar') || lower.includes('glucose')) {
     return "Your last HbA1c was 7.2% — slightly above target. Dr. Sarah Lim recommends reviewing your diet and increasing your metformin dose. Want me to book a follow-up?";
@@ -216,7 +216,7 @@ export default function App() {
     setMessages((prev) => [...prev, userMsg]);
     setChatInput('');
     setTimeout(() => {
-      setMessages((prev) => [...prev, { sender: 'aura', text: getAuraResponse(text) }]);
+      setMessages((prev) => [...prev, { sender: 'drclaw', text: getDrClawResponse(text) }]);
     }, 800);
   };
 
@@ -287,7 +287,7 @@ export default function App() {
               </svg>
             </div>
             <div>
-              <h2 className="text-xl font-bold tracking-tight text-white/90 font-serif">CareTrack</h2>
+              <h2 className="text-xl font-bold tracking-tight text-white/90 font-serif">Dr Claw</h2>
               <p className="text-[10px] text-white/50 tracking-wider">CHRONIC CARE PORTAL</p>
             </div>
           </div>

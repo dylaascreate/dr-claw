@@ -33,7 +33,7 @@ export default function ChatFooter({ chatInput, setChatInput, onSend, onFocus, o
               onKeyDown={handleKeyPress}
               onFocus={onFocus}
               type="text"
-              placeholder="Message Aura AI..."
+              placeholder="Message Dr Claw..."
               className="flex-1 bg-transparent outline-none text-sm text-brown-800 placeholder:text-brown-400 px-2 py-1.5"
               aria-label="Message"
             />
