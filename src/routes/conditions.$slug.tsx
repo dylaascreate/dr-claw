@@ -1,6 +1,7 @@
 // @ts-nocheck
 import { createFileRoute, Link, notFound, useNavigate } from '@tanstack/react-router';
 import { useEffect } from 'react';
+import { toast } from 'sonner';
 import { CONDITIONS, getConditionBySlug } from '@/wellness/data/conditions';
 import { supabase } from '@/integrations/supabase/client';
 
