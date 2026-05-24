@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { CONDITIONS } from '@/wellness/data/conditions';
+
+const VISIT_TYPES = ['Consultation', 'Surgery', 'Follow-up'];
+
 
 const INSURERS = [
   'AIA / AIA Public Takaful (A-Plus Health)',
@@ -75,7 +79,9 @@ function ClaimStepper({ stage }) {
 export default function DrawerClaims({ show, onClose, claims, claimsLoading, onSubmitClaim, showToast, isAuthed }) {
   const [showForm, setShowForm] = useState(false);
   const [insurer, setInsurer] = useState(INSURERS[0]);
-  const [treatmentType, setTreatmentType] = useState('Endocrinology Consultation');
+  const [conditionSlug, setConditionSlug] = useState(CONDITIONS[0].slug);
+  const [visitType, setVisitType] = useState(VISIT_TYPES[0]);
+
   const [amount, setAmount] = useState('');
   const [claimDate, setClaimDate] = useState('');
   const [uploadText, setUploadText] = useState('Select file (PDF, JPG or PNG)');
@@ -109,7 +115,9 @@ export default function DrawerClaims({ show, onClose, claims, claimsLoading, onS
     setAmount('');
     setClaimDate('');
     setInsurer(INSURERS[0]);
-    setTreatmentType('Endocrinology Consultation');
+    setConditionSlug(CONDITIONS[0].slug);
+    setVisitType(VISIT_TYPES[0]);
+
     setUploadText('Select file (PDF, JPG or PNG)');
     setUploadProgress(null);
     setPickedFile(null);
@@ -119,6 +127,8 @@ export default function DrawerClaims({ show, onClose, claims, claimsLoading, onS
     e.preventDefault();
     if (!pickedFile) return;
     setSubmitting(true);
+    const cond = CONDITIONS.find((c) => c.slug === conditionSlug) || CONDITIONS[0];
+    const treatmentType = `${cond.name} — ${visitType}`;
     await onSubmitClaim({
       treatmentType,
       amount: amount || '120.00',
@@ -131,6 +141,7 @@ export default function DrawerClaims({ show, onClose, claims, claimsLoading, onS
     resetForm();
     setShowForm(false);
   };
+
 
   const handleDownload = async (claim) => {
     if (!claim.filePath) { showToast('No file attached', 'error'); return; }
@@ -223,20 +234,43 @@ export default function DrawerClaims({ show, onClose, claims, claimsLoading, onS
               </div>
 
               <div>
-                <label className="text-xs font-semibold text-brown-600 block mb-1">Treatment Type</label>
+                <label className="text-xs font-semibold text-brown-600 block mb-1">Condition</label>
                 <select
-                  value={treatmentType}
-                  onChange={(e) => setTreatmentType(e.target.value)}
+                  value={conditionSlug}
+                  onChange={(e) => setConditionSlug(e.target.value)}
                   className="w-full bg-cream border border-brown-100 rounded-xl p-2.5 text-xs text-brown-800 focus:outline-none focus:border-sage-500"
                 >
-                  <option>Endocrinology Consultation</option>
-                  <option>Cardiology Follow-up</option>
-                  <option>Nephrology Assessment</option>
-                  <option>Vascular Surgeon Review</option>
-                  <option>General Chronic Care Review</option>
-                  <option>HbA1c Blood Panel</option>
+                  {CONDITIONS.map((c) => (
+                    <option key={c.slug} value={c.slug}>
+                      {c.name} • {c.specialist}
+                    </option>
+                  ))}
                 </select>
               </div>
+
+              <div>
+                <label className="text-xs font-semibold text-brown-600 block mb-1">Visit Type</label>
+                <div className="grid grid-cols-3 gap-2">
+                  {VISIT_TYPES.map((v) => {
+                    const active = visitType === v;
+                    return (
+                      <button
+                        type="button"
+                        key={v}
+                        onClick={() => setVisitType(v)}
+                        className={`py-2 rounded-xl text-xs font-semibold border transition-all ${
+                          active
+                            ? 'bg-sage-500 text-white border-sage-500'
+                            : 'bg-cream text-brown-600 border-brown-100 hover:border-brown-400'
+                        }`}
+                      >
+                        {v}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
