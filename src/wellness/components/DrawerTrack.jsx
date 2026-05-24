@@ -222,17 +222,17 @@ export default function DrawerTrack({ show, onClose, onSubmitted, showToast }) {
             )}
 
             <Section title="How are you feeling?">
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-1 gap-2">
                 {FEELINGS.map(f => (
                   <button
                     key={f.key}
                     onClick={() => setFeeling(f.key)}
-                    className={`p-3 bg-white border rounded-2xl text-center shadow-sm transition-all ${
+                    className={`p-3 bg-white border rounded-2xl text-left shadow-sm transition-all flex items-center gap-3 ${
                       feeling === f.key ? f.color : 'border-brown-100 hover:border-brown-400'
                     }`}
                   >
                     <div className="text-2xl">{f.emoji}</div>
-                    <p className="text-sm font-semibold text-brown-800 mt-1">{f.label}</p>
+                    <p className="text-sm font-semibold text-brown-800">{f.label}</p>
                   </button>
                 ))}
               </div>
@@ -257,7 +257,7 @@ export default function DrawerTrack({ show, onClose, onSubmitted, showToast }) {
         {/* STEP 1 — Measurements */}
         {STEPS[step] === 'Measurements' && (
           <Section title="Today's readings" hint="Skip any you don't have right now.">
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 gap-3">
               {CONDITION_PROFILE.measurements.map(m => (
                 <label key={m.key} className="bg-white border border-brown-100 rounded-2xl p-3 shadow-sm">
                   <p className="text-xs font-semibold text-brown-600">{m.label}</p>
@@ -283,14 +283,14 @@ export default function DrawerTrack({ show, onClose, onSubmitted, showToast }) {
         {/* STEP 2 — Symptoms */}
         {STEPS[step] === 'Symptoms' && (
           <Section title="Any symptoms today?" hint="Tap all that apply. Leave empty if you feel fine.">
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-1 gap-2">
               {CONDITION_PROFILE.symptoms.map(s => {
                 const isOn = symptoms.includes(s.key);
                 return (
                   <button
                     key={s.key}
                     onClick={() => toggleSymptom(s.key)}
-                    className={`p-3 bg-white border rounded-2xl text-left shadow-sm transition-all flex items-center gap-2 ${
+                    className={`p-3 bg-white border rounded-2xl text-left shadow-sm transition-all flex items-center gap-3 ${
                       isOn ? 'border-sage-500 bg-sage-500/5' : 'border-brown-100 hover:border-brown-400'
                     }`}
                   >
