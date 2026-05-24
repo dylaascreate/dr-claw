@@ -222,17 +222,17 @@ export default function DrawerTrack({ show, onClose, onSubmitted, showToast }) {
             )}
 
             <Section title="How are you feeling?">
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-1 gap-2">
                 {FEELINGS.map(f => (
                   <button
                     key={f.key}
                     onClick={() => setFeeling(f.key)}
-                    className={`p-3 bg-white border rounded-2xl text-center shadow-sm transition-all ${
+                    className={`p-3 bg-white border rounded-2xl text-left shadow-sm transition-all flex items-center gap-3 ${
                       feeling === f.key ? f.color : 'border-brown-100 hover:border-brown-400'
                     }`}
                   >
                     <div className="text-2xl">{f.emoji}</div>
-                    <p className="text-sm font-semibold text-brown-800 mt-1">{f.label}</p>
+                    <p className="text-sm font-semibold text-brown-800">{f.label}</p>
                   </button>
                 ))}
               </div>
