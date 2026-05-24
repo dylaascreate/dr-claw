@@ -57,9 +57,11 @@ export default function DrawerExplore({ show, onClose, onQuickBook }) {
 
           <div className="grid grid-cols-2 gap-3">
             {CONDITIONS.map((c) => (
-              <button
-                key={c.name}
-                onClick={() => onQuickBook(c.name)}
+              <Link
+                key={c.slug}
+                to="/conditions/$slug"
+                params={{ slug: c.slug }}
+                onClick={onClose}
                 className="text-left p-3 bg-white rounded-2xl shadow-sm border border-brown-100/40 hover:shadow-md hover:border-sage-500/40 transition-all active:scale-[0.98] flex flex-col"
               >
                 <div className="w-full aspect-[4/3] rounded-xl overflow-hidden mb-3 bg-brown-100/40">
@@ -68,7 +70,7 @@ export default function DrawerExplore({ show, onClose, onQuickBook }) {
                 <h5 className="text-sm font-semibold text-brown-800 font-serif leading-tight">{c.name}</h5>
                 <p className="text-[11px] text-brown-500 mt-1 leading-snug line-clamp-2">{c.desc}</p>
                 <span className="mt-2 text-[11px] font-semibold text-terracotta-500">Learn more →</span>
-              </button>
+              </Link>
             ))}
           </div>
         </div>
