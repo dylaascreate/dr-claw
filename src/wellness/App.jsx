@@ -261,10 +261,13 @@ export default function App() {
     setNotifCount(0);
   };
 
-  const handleLogout = () => {
-    showToast('👋 You have been logged out.');
+  const handleLogout = async () => {
     closeDrawer();
+    await supabase.auth.signOut();
+    showToast('👋 You have been logged out.');
+    window.location.href = '/';
   };
+
 
   const handleNotifBell = () => {
     setShowNotifications((prev) => !prev);
