@@ -270,19 +270,6 @@ export default function App() {
   };
 
 
-  const handleToggleFavorite = (name) => {
-    setFavorites((prev) => prev.filter((f) => f.name !== name));
-    showToast('Removed from favourites');
-  };
-
-  const handleBookPractitioner = (practitioner) => {
-    setBookingParams({
-      serviceName: practitioner.signature,
-      practitioner: practitioner.name,
-    });
-    closeDrawer();
-    setTimeout(() => openDrawer('book'), 200);
-  };
 
   const handleClearNotifications = () => {
     setNotifications([]);
@@ -547,15 +534,6 @@ export default function App() {
           onSubmitClaim={handleSubmitClaim}
           showToast={showToast}
           isAuthed={!!user}
-        />
-
-
-        <DrawerFavorites
-          show={activeDrawer === 'favorites'}
-          onClose={closeDrawer}
-          favorites={favorites}
-          onToggleFavorite={handleToggleFavorite}
-          onBookPractitioner={handleBookPractitioner}
         />
 
         <DrawerProfile
