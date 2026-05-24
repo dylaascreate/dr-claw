@@ -189,18 +189,22 @@ function ConditionPage() {
         </section>
 
         <section>
-          <h4 className="text-xs font-semibold text-brown-400 uppercase tracking-wider mb-4">
-            Other chronic conditions
-          </h4>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            {CONDITIONS.filter((c) => c.slug !== condition.slug)
-              .slice(0, 4)
-              .map((c) => (
+          <div className="flex items-end justify-between mb-4">
+            <h4 className="text-xs font-semibold text-brown-400 uppercase tracking-wider">
+              Related vascular conditions
+            </h4>
+            <span className="hidden md:inline text-[11px] text-brown-400">Scroll →</span>
+          </div>
+          <div className="-mx-5 px-5 overflow-x-auto custom-scrollbar">
+            <div className="flex gap-3 pb-3 snap-x snap-mandatory">
+              {CONDITIONS.filter(
+                (c) => c.slug !== condition.slug && c.category !== 'other',
+              ).map((c) => (
                 <Link
                   key={c.slug}
                   to="/conditions/$slug"
                   params={{ slug: c.slug }}
-                  className="group text-left p-3 bg-white rounded-2xl shadow-sm border border-brown-100/40 hover:shadow-md hover:border-sage-500/40 transition-all"
+                  className="group shrink-0 snap-start w-48 md:w-56 text-left p-3 bg-white rounded-2xl shadow-sm border border-brown-100/40 hover:shadow-md hover:border-sage-500/40 transition-all"
                 >
                   <div className="aspect-[4/3] rounded-xl overflow-hidden mb-3 bg-brown-100/40">
                     <img
@@ -220,8 +224,10 @@ function ConditionPage() {
                   </span>
                 </Link>
               ))}
+            </div>
           </div>
         </section>
+
       </main>
 
       <footer className="border-t border-brown-100/60 py-8 text-center text-xs text-brown-400">
