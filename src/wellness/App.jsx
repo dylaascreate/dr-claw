@@ -228,8 +228,12 @@ export default function App() {
     handleSendMessage(text);
   };
 
-  const handleTrackCheckIn = () => {
-    appendDrClawReply(getTrackCheckInSummary(patientProfile));
+  const handleTrackSubmitted = (summary) => {
+    const flagged = summary?.symptoms?.length || 0;
+    const msg = flagged > 0
+      ? `Check-in saved — ${flagged} symptom${flagged > 1 ? 's' : ''} flagged. Dr Claw will review your trend.`
+      : 'Check-in saved — keep up the consistency 💪';
+    appendDrClawReply(msg);
   };
 
   const handleSimulateVoice = () => {
