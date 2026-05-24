@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
 import {
@@ -48,12 +48,8 @@ const INITIAL_FAVORITES = [
   },
 ];
 
-const INITIAL_CLAIMS = [
-  { date: 'Oct 18, 2024', service: 'Cardiology Consultation', amount: '320.00', stage: 'credited', insurer: 'AIA', claimType: 'self' },
-  { date: 'Sep 30, 2024', service: 'HbA1c Blood Panel', amount: '180.00', stage: 'approved', insurer: 'Allianz Malaysia', claimType: 'self' },
-  { date: 'Sep 14, 2024', service: 'Nephrology Follow-up', amount: '250.00', stage: 'review', insurer: 'Prudential', claimType: 'self' },
-  { date: 'Sep 02, 2024', service: 'Vascular Surgeon Review', amount: '410.00', stage: 'submitted', insurer: 'Great Eastern', claimType: 'employer' },
-];
+// Claims now loaded from Supabase per user (blank slate by default)
+
 
 // ── App ───────────────────────────────────────────────────────────────────────
 
@@ -79,7 +75,8 @@ export default function App() {
   const [favorites, setFavorites] = useState(INITIAL_FAVORITES);
 
   // Claims
-  const [claims, setClaims] = useState(INITIAL_CLAIMS);
+  const [claims, setClaims] = useState([]);
+  const [claimsLoading, setClaimsLoading] = useState(false);
 
   // Toast notification
   const [toast, setToast] = useState(null);
@@ -120,6 +117,36 @@ export default function App() {
       });
     }
   }, [user]);
+
+  // Load claims for current user
+  const loadClaims = async (uid) => {
+    if (!uid) { setClaims([]); return; }
+    setClaimsLoading(true);
+    const { data, error } = await supabase
+      .from('claims')
+      .select('*')
+      .eq('user_id', uid)
+      .order('created_at', { ascending: false });
+    if (!error && data) {
+      setClaims(data.map(c => ({
+        id: c.id,
+        date: new Date(c.claim_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+        service: c.service,
+        amount: Number(c.amount).toFixed(2),
+        stage: c.stage,
+        insurer: c.insurer,
+        claimType: c.claim_type,
+        remarks: c.remarks,
+        filePath: c.file_path,
+        fileName: c.file_name,
+      })));
+    }
+    setClaimsLoading(false);
+  };
+
+  useEffect(() => {
+    loadClaims(user?.id);
+  }, [user?.id]);
 
   const userName = user?.user_metadata?.name || user?.user_metadata?.full_name || 'Joel';
 
@@ -232,18 +259,36 @@ export default function App() {
     setTimeout(() => handleSendMessage('How are my steps this week compared to last week?'), 300);
   };
 
-  const handleSubmitClaim = (claimData) => {
-    const newClaim = {
-      date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+  const handleSubmitClaim = async (claimData) => {
+    if (!user) { showToast('Please sign in to submit a claim', 'error'); return; }
+    let filePath = null;
+    let fileName = null;
+    if (claimData.file) {
+      const ext = claimData.file.name.split('.').pop();
+      const path = `${user.id}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+      const { error: upErr } = await supabase.storage
+        .from('claim-receipts').upload(path, claimData.file, { upsert: false });
+      if (upErr) { showToast('Upload failed: ' + upErr.message, 'error'); return; }
+      filePath = path;
+      fileName = claimData.file.name;
+    }
+    const { data, error } = await supabase.from('claims').insert({
+      user_id: user.id,
       service: claimData.treatmentType,
-      amount: parseFloat(claimData.amount).toFixed(2),
-      stage: 'submitted',
+      amount: parseFloat(claimData.amount || '0'),
       insurer: claimData.insurer,
-      claimType: claimData.claimType || 'self',
-    };
-    setClaims((prev) => [newClaim, ...prev]);
+      claim_type: claimData.claimType || 'self',
+      stage: 'submitted',
+      file_path: filePath,
+      file_name: fileName,
+      claim_date: claimData.claimDate || new Date().toISOString().split('T')[0],
+    }).select().single();
+    if (error) { showToast('Submit failed: ' + error.message, 'error'); return; }
+    await loadClaims(user.id);
     showToast('📋 Claim submitted successfully!');
+    return data;
   };
+
 
   const handleToggleFavorite = (name) => {
     setFavorites((prev) => prev.filter((f) => f.name !== name));
@@ -531,9 +576,12 @@ export default function App() {
           show={activeDrawer === 'claims'}
           onClose={closeDrawer}
           claims={claims}
+          claimsLoading={claimsLoading}
           onSubmitClaim={handleSubmitClaim}
           showToast={showToast}
+          isAuthed={!!user}
         />
+
 
         <DrawerFavorites
           show={activeDrawer === 'favorites'}

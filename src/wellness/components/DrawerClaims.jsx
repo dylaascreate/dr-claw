@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 
 const INSURERS = [
   'AIA / AIA Public Takaful (A-Plus Health)',
@@ -20,29 +21,34 @@ const STAGES = [
   { key: 'credited', label: 'Credited' },
 ];
 
+const FAILURE_STAGES = ['rejected', 'failed', 'returned'];
+
 function stageIndex(stage) {
   const i = STAGES.findIndex((s) => s.key === stage);
   return i === -1 ? 0 : i;
 }
 
 function ClaimStepper({ stage }) {
+  const isFailed = FAILURE_STAGES.includes(stage);
   const current = stageIndex(stage);
   return (
     <div className="flex items-center gap-1 mt-3">
       {STAGES.map((s, i) => {
-        const done = i <= current;
-        const isCurrent = i === current;
+        const done = !isFailed && i <= current;
+        const isCurrent = !isFailed && i === current;
         return (
           <React.Fragment key={s.key}>
             <div className="flex flex-col items-center flex-shrink-0">
               <div
                 className={`w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-bold border ${
-                  done
+                  isFailed && i === 0
+                    ? 'bg-red-500 border-red-500 text-white'
+                    : done
                     ? 'bg-sage-500 border-sage-500 text-white'
                     : 'bg-white border-brown-100 text-brown-400'
                 } ${isCurrent ? 'ring-2 ring-sage-500/30' : ''}`}
               >
-                {done && i < current ? '✓' : i + 1}
+                {isFailed && i === 0 ? '!' : done && i < current ? '✓' : i + 1}
               </div>
               <span
                 className={`text-[8px] mt-1 font-semibold text-center w-14 leading-tight ${
@@ -66,7 +72,7 @@ function ClaimStepper({ stage }) {
   );
 }
 
-export default function DrawerClaims({ show, onClose, claims, onSubmitClaim, showToast }) {
+export default function DrawerClaims({ show, onClose, claims, claimsLoading, onSubmitClaim, showToast, isAuthed }) {
   const [showForm, setShowForm] = useState(false);
   const [insurer, setInsurer] = useState(INSURERS[0]);
   const [treatmentType, setTreatmentType] = useState('Endocrinology Consultation');
@@ -74,25 +80,29 @@ export default function DrawerClaims({ show, onClose, claims, onSubmitClaim, sho
   const [claimDate, setClaimDate] = useState('');
   const [uploadText, setUploadText] = useState('Select file (PDF, JPG or PNG)');
   const [uploadProgress, setUploadProgress] = useState(null);
-  const [fileUploaded, setFileUploaded] = useState(false);
+  const [pickedFile, setPickedFile] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [expandedId, setExpandedId] = useState(null);
 
-  const simulateFileUpload = () => {
-    setUploadText('Uploading Invoice Receipt...');
+  const handleFileChange = (e) => {
+    const f = e.target.files?.[0];
+    if (!f) return;
+    setPickedFile(f);
+    setUploadText('Uploading...');
     setUploadProgress(0);
     const interval = setInterval(() => {
       setUploadProgress((prev) => {
         if (prev >= 100) {
           clearInterval(interval);
           setTimeout(() => {
-            setUploadText('invoice_rec_8832.pdf (1.2 MB) Uploaded');
+            setUploadText(`${f.name} (${(f.size / 1024).toFixed(0)} KB) ready`);
             setUploadProgress(null);
-            setFileUploaded(true);
-          }, 400);
+          }, 300);
           return 100;
         }
-        return prev + 20;
+        return prev + 25;
       });
-    }, 130);
+    }, 100);
   };
 
   const resetForm = () => {
@@ -102,21 +112,33 @@ export default function DrawerClaims({ show, onClose, claims, onSubmitClaim, sho
     setTreatmentType('Endocrinology Consultation');
     setUploadText('Select file (PDF, JPG or PNG)');
     setUploadProgress(null);
-    setFileUploaded(false);
+    setPickedFile(null);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const finalAmount = amount || '120.00';
-    onSubmitClaim({
+    if (!pickedFile) return;
+    setSubmitting(true);
+    await onSubmitClaim({
       treatmentType,
-      amount: finalAmount,
+      amount: amount || '120.00',
       insurer,
       claimType: 'self',
+      file: pickedFile,
+      claimDate: claimDate || undefined,
     });
+    setSubmitting(false);
     resetForm();
     setShowForm(false);
-    showToast('📋 Claim submitted — now in stage 1: Submitted');
+  };
+
+  const handleDownload = async (claim) => {
+    if (!claim.filePath) { showToast('No file attached', 'error'); return; }
+    const { data, error } = await supabase.storage
+      .from('claim-receipts')
+      .createSignedUrl(claim.filePath, 60);
+    if (error) { showToast('Download failed: ' + error.message, 'error'); return; }
+    window.open(data.signedUrl, '_blank');
   };
 
   return (
@@ -151,22 +173,20 @@ export default function DrawerClaims({ show, onClose, claims, onSubmitClaim, sho
           </p>
           <button
             onClick={() => setShowForm(!showForm)}
-            className="w-full py-2.5 bg-sage-500 text-white rounded-xl text-xs font-bold shadow hover:bg-sage-500/90 active:scale-95 transition-all"
+            disabled={!isAuthed}
+            className="w-full py-2.5 bg-sage-500 text-white rounded-xl text-xs font-bold shadow hover:bg-sage-500/90 active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
           >
-            {showForm ? 'Cancel Submission' : '+ Start New Submission'}
+            {!isAuthed ? 'Sign in to submit a claim' : showForm ? 'Cancel Submission' : '+ Start New Submission'}
           </button>
 
           {showForm && (
             <form onSubmit={handleSubmit} className="mt-4 pt-4 border-t border-brown-100 space-y-4">
-              {/* Upload first */}
               <div>
                 <label className="text-xs font-semibold text-brown-600 block mb-1">
                   Upload Practitioner Invoice Receipt
                 </label>
-                <div
-                  className="relative border-2 border-dashed border-brown-100 hover:border-brown-400 bg-cream rounded-xl p-4 flex flex-col items-center justify-center cursor-pointer transition-colors"
-                  onClick={simulateFileUpload}
-                >
+                <label className="relative block border-2 border-dashed border-brown-100 hover:border-brown-400 bg-cream rounded-xl p-4 flex flex-col items-center justify-center cursor-pointer transition-colors">
+                  <input type="file" accept=".pdf,.jpg,.jpeg,.png" className="hidden" onChange={handleFileChange} />
                   <svg className="w-6 h-6 text-brown-400 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                   </svg>
@@ -176,10 +196,9 @@ export default function DrawerClaims({ show, onClose, claims, onSubmitClaim, sho
                       <div className="bg-terracotta-500 h-full transition-all duration-300" style={{ width: `${uploadProgress}%` }} />
                     </div>
                   )}
-                </div>
+                </label>
               </div>
 
-              {/* Insurer dropdown */}
               <div>
                 <label className="text-xs font-semibold text-brown-600 block mb-1">Select Insurer</label>
                 <select
@@ -187,24 +206,18 @@ export default function DrawerClaims({ show, onClose, claims, onSubmitClaim, sho
                   onChange={(e) => setInsurer(e.target.value)}
                   className="w-full bg-cream border border-brown-100 rounded-xl p-2.5 text-xs text-brown-800 focus:outline-none focus:border-sage-500"
                 >
-                  {INSURERS.map((i) => (
-                    <option key={i}>{i}</option>
-                  ))}
+                  {INSURERS.map((i) => (<option key={i}>{i}</option>))}
                 </select>
               </div>
 
-              {/* Agent — disabled */}
               <div className="opacity-50 pointer-events-none">
-                <label className="text-xs font-semibold text-brown-600 block mb-1 flex items-center gap-2">
+                <label className="text-xs font-semibold text-brown-600 mb-1 flex items-center gap-2">
                   Agent
                   <span className="text-[9px] font-bold uppercase tracking-wider text-brown-400 bg-brown-100 px-1.5 py-0.5 rounded">
                     Coming soon
                   </span>
                 </label>
-                <select
-                  disabled
-                  className="w-full bg-brown-100/40 border border-brown-100 rounded-xl p-2.5 text-xs text-brown-400 cursor-not-allowed"
-                >
+                <select disabled className="w-full bg-brown-100/40 border border-brown-100 rounded-xl p-2.5 text-xs text-brown-400 cursor-not-allowed">
                   <option>Assign agent (unavailable)</option>
                 </select>
               </div>
@@ -228,31 +241,22 @@ export default function DrawerClaims({ show, onClose, claims, onSubmitClaim, sho
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="text-xs font-semibold text-brown-600 block mb-1">Amount (RM)</label>
-                  <input
-                    value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
-                    type="number"
-                    placeholder="120.00"
-                    className="w-full bg-cream border border-brown-100 rounded-xl p-2.5 text-xs text-brown-800 focus:outline-none focus:border-sage-500"
-                  />
+                  <input value={amount} onChange={(e) => setAmount(e.target.value)} type="number" placeholder="120.00"
+                    className="w-full bg-cream border border-brown-100 rounded-xl p-2.5 text-xs text-brown-800 focus:outline-none focus:border-sage-500" />
                 </div>
                 <div>
                   <label className="text-xs font-semibold text-brown-600 block mb-1">Date</label>
-                  <input
-                    value={claimDate}
-                    onChange={(e) => setClaimDate(e.target.value)}
-                    type="date"
-                    className="w-full bg-cream border border-brown-100 rounded-xl p-2.5 text-xs text-brown-800 focus:outline-none focus:border-sage-500"
-                  />
+                  <input value={claimDate} onChange={(e) => setClaimDate(e.target.value)} type="date"
+                    className="w-full bg-cream border border-brown-100 rounded-xl p-2.5 text-xs text-brown-800 focus:outline-none focus:border-sage-500" />
                 </div>
               </div>
 
               <button
                 type="submit"
-                disabled={!fileUploaded}
+                disabled={!pickedFile || submitting}
                 className="w-full py-2 bg-terracotta-500 text-white text-xs font-bold rounded-xl shadow hover:bg-terracotta-500/90 active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
               >
-                {fileUploaded ? 'Submit Claim' : 'Upload receipt to continue'}
+                {submitting ? 'Submitting...' : pickedFile ? 'Submit Claim' : 'Upload receipt to continue'}
               </button>
             </form>
           )}
@@ -262,43 +266,102 @@ export default function DrawerClaims({ show, onClose, claims, onSubmitClaim, sho
         <div className="space-y-3">
           <h4 className="text-xs font-semibold uppercase tracking-wider text-brown-400">Your Claims</h4>
 
-          <div className="space-y-3">
-            {claims.map((claim, idx) => {
-              const stage = claim.stage || (claim.status === 'approved' ? 'credited' : 'review');
-              const claimType = claim.claimType || 'self';
-              return (
-                <div
-                  key={claim.id ?? idx}
-                  className="p-4 bg-white rounded-2xl border border-brown-100/50 shadow-sm animate-fade-in"
-                >
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="min-w-0">
-                      <p className="text-xs font-bold text-brown-800 font-serif truncate">
-                        {claim.service || claim.title}
-                      </p>
-                      <p className="text-[10px] text-brown-400 mt-0.5">
-                        {claim.date}
-                        {claim.insurer ? ` • ${claim.insurer.split(' (')[0]}` : ''}
-                      </p>
-                    </div>
-                    <div className="text-right flex-shrink-0">
-                      <p className="text-xs font-bold text-brown-800">RM {claim.amount}</p>
-                      <span
-                        className={`inline-block px-2 py-0.5 rounded-full text-[9px] font-bold mt-1 ${
-                          claimType === 'self'
-                            ? 'bg-sage-500/10 text-sage-500'
-                            : 'bg-brown-100 text-brown-600'
-                        }`}
-                      >
-                        {claimType === 'self' ? 'Self claim' : claimType}
-                      </span>
-                    </div>
+          {claimsLoading ? (
+            <p className="text-xs text-brown-400 italic px-1">Loading your claims...</p>
+          ) : claims.length === 0 ? (
+            <div className="p-6 bg-white rounded-2xl border border-dashed border-brown-100 text-center">
+              <p className="text-xs font-semibold text-brown-600 mb-1">No claims yet</p>
+              <p className="text-[10px] text-brown-400">
+                {isAuthed ? 'Submit your first claim above to get started.' : 'Sign in to see and file claims.'}
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {claims.map((claim) => {
+                const stage = claim.stage || 'review';
+                const claimType = claim.claimType || 'self';
+                const isExpanded = expandedId === claim.id;
+                const isFailed = FAILURE_STAGES.includes(stage);
+                return (
+                  <div
+                    key={claim.id}
+                    className="bg-white rounded-2xl border border-brown-100/50 shadow-sm animate-fade-in overflow-hidden"
+                  >
+                    <button
+                      onClick={() => setExpandedId(isExpanded ? null : claim.id)}
+                      className="w-full p-4 text-left hover:bg-cream/40 transition-colors"
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="min-w-0">
+                          <p className="text-xs font-bold text-brown-800 font-serif truncate">
+                            {claim.service}
+                          </p>
+                          <p className="text-[10px] text-brown-400 mt-0.5">
+                            {claim.date}
+                            {claim.insurer ? ` • ${claim.insurer.split(' (')[0]}` : ''}
+                          </p>
+                        </div>
+                        <div className="text-right flex-shrink-0">
+                          <p className="text-xs font-bold text-brown-800">RM {claim.amount}</p>
+                          <span
+                            className={`inline-block px-2 py-0.5 rounded-full text-[9px] font-bold mt-1 ${
+                              isFailed
+                                ? 'bg-red-100 text-red-600'
+                                : claimType === 'self'
+                                ? 'bg-sage-500/10 text-sage-500'
+                                : 'bg-brown-100 text-brown-600'
+                            }`}
+                          >
+                            {isFailed ? stage : claimType === 'self' ? 'Self claim' : claimType}
+                          </span>
+                        </div>
+                      </div>
+                      <ClaimStepper stage={stage} />
+                    </button>
+
+                    {isExpanded && (
+                      <div className="px-4 pb-4 pt-2 border-t border-brown-100/60 space-y-3 bg-cream/30">
+                        {(isFailed || claim.remarks) && (
+                          <div>
+                            <p className="text-[10px] font-bold uppercase tracking-wider text-brown-400 mb-1">
+                              {isFailed ? 'Failure remarks' : 'Remarks'}
+                            </p>
+                            <p className={`text-xs leading-relaxed p-2.5 rounded-lg ${
+                              isFailed ? 'bg-red-50 text-red-700 border border-red-100' : 'bg-white text-brown-600 border border-brown-100'
+                            }`}>
+                              {claim.remarks || 'No remarks added yet.'}
+                            </p>
+                          </div>
+                        )}
+
+                        <div>
+                          <p className="text-[10px] font-bold uppercase tracking-wider text-brown-400 mb-1">
+                            Receipt
+                          </p>
+                          {claim.filePath ? (
+                            <button
+                              onClick={() => handleDownload(claim)}
+                              className="w-full flex items-center justify-between gap-2 p-2.5 bg-white rounded-lg border border-brown-100 hover:border-sage-500 transition-colors"
+                            >
+                              <span className="text-xs text-brown-700 truncate">{claim.fileName || 'Receipt file'}</span>
+                              <span className="flex items-center gap-1 text-[10px] font-bold text-sage-500 flex-shrink-0">
+                                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3" />
+                                </svg>
+                                Download
+                              </span>
+                            </button>
+                          ) : (
+                            <p className="text-[10px] text-brown-400 italic">No file attached.</p>
+                          )}
+                        </div>
+                      </div>
+                    )}
                   </div>
-                  <ClaimStepper stage={stage} />
-                </div>
-              );
-            })}
-          </div>
+                );
+              })}
+            </div>
+          )}
         </div>
       </div>
     </div>
