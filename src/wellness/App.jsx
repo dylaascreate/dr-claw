@@ -556,6 +556,8 @@ export default function App() {
           onClose={closeDrawer}
           onSubmitted={handleTrackSubmitted}
           showToast={showToast}
+          needsMonitoring={user?.user_metadata?.needs_monitoring ?? true}
+          onBookAppointment={() => { closeDrawer(); setTimeout(() => openDrawer('book'), 150); }}
         />
       </div>
 
