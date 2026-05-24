@@ -37,7 +37,7 @@ const INITIAL_NOTIFICATIONS = buildInitialNotifications(patientProfile);
 
 export default function App() {
   // Active drawer/modal state
-  const [activeDrawer, setActiveDrawer] = useState(null); // 'book' | 'chat' | 'explore' | 'claims' | 'favorites' | 'profile'
+  const [activeDrawer, setActiveDrawer] = useState(null); // 'book' | 'chat' | 'explore' | 'claims' | 'profile'
 
   // Notifications
   const [showNotifications, setShowNotifications] = useState(false);
@@ -62,7 +62,7 @@ export default function App() {
   const [toast, setToast] = useState(null);
   const toastTimer = useRef(null);
 
-  // Booking pre-selection (from Explore or Favorites)
+  // Booking pre-selection (from Explore)
   const [bookingParams, setBookingParams] = useState(null);
 
   // User state from Supabase
