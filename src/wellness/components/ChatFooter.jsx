@@ -18,7 +18,7 @@ export default function ChatFooter({ chatInput, setChatInput, onSend, onFocus, o
       <div className="h-4 bg-gradient-to-t from-cream to-transparent pointer-events-none -mt-4"></div>
       <div className="px-3 pb-4 pt-2">
         <div className="flex items-end gap-2">
-          <div className="flex-1 flex items-end bg-card rounded-3xl shadow-soft border border-brown-100/70 pl-3 pr-2 py-1.5 min-h-[44px]">
+          <div className="flex-1 flex items-end bg-white rounded-3xl shadow-soft border border-brown-100/70 pl-3 pr-2 py-1.5 min-h-[44px]">
             <button
               onClick={() => { onFocus?.(); insertEmoji('😊'); }}
               type="button"

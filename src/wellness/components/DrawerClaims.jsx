@@ -77,7 +77,7 @@ export default function DrawerClaims({ show, onClose, claims, onSubmitClaim, sho
 
       <div className="flex-1 overflow-y-auto custom-scrollbar p-5 space-y-6 text-left">
         {/* Submit New Claim Card */}
-        <div className="bg-card border border-brown-100/70 rounded-2xl p-4 shadow-soft">
+        <div className="bg-white border border-brown-100/70 rounded-2xl p-4 shadow-soft">
           <h4 className="text-sm font-semibold text-brown-800 mb-2 font-serif">File a New Claim</h4>
           <p className="text-xs text-brown-500 mb-4">
             Submit specialist invoices from your chronic care consultations for reimbursement under your insurance plan.

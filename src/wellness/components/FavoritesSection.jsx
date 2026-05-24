@@ -4,7 +4,7 @@ export default function FavoritesSection({ favCount, onOpenFavorites }) {
   return (
     <button
       onClick={onOpenFavorites}
-      className="w-full bg-card rounded-2xl p-4 shadow-soft flex items-center justify-between group active:scale-[0.98] transition-transform mp-anim mp-anim-4 hover:shadow-md border border-white"
+      className="w-full bg-white rounded-2xl p-4 shadow-soft flex items-center justify-between group active:scale-[0.98] transition-transform mp-anim mp-anim-4 hover:shadow-md border border-white"
     >
       <div className="flex items-center gap-4">
         <div className="w-12 h-12 rounded-full bg-terracotta-100 flex items-center justify-center text-terracotta-500">

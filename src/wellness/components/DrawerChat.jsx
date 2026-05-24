@@ -66,7 +66,7 @@ export default function DrawerChat({ show, onClose, messages, onSendMessage, onS
               className={`rounded-2xl p-3 max-w-[85%] text-sm shadow-sm ${
                 isUser
                   ? 'bg-sage-500 text-white'
-                  : 'bg-card text-brown-800 border border-brown-100/30 text-left'
+                  : 'bg-white text-brown-800 border border-brown-100/30 text-left'
               }`}
             >
               {msg.text}

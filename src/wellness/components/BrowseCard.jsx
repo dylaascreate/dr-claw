@@ -115,7 +115,7 @@ export function BrowseCard() {
         {/* Left fade + chevron */}
         {canScrollLeft && (
           <div className="pointer-events-none absolute left-0 top-0 bottom-3 w-16 bg-gradient-to-r from-card to-transparent flex items-center justify-start pl-2">
-            <div className="w-7 h-7 rounded-full bg-card shadow-soft border border-brown-100/60 flex items-center justify-center">
+            <div className="w-7 h-7 rounded-full bg-white shadow-soft border border-brown-100/60 flex items-center justify-center">
               <svg className="w-4 h-4 text-brown-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
               </svg>
@@ -126,7 +126,7 @@ export function BrowseCard() {
         {/* Right fade + chevron */}
         {canScrollRight && (
           <div className="pointer-events-none absolute right-0 top-0 bottom-3 w-16 bg-gradient-to-l from-card to-transparent flex items-center justify-end pr-2">
-            <div className="w-7 h-7 rounded-full bg-card shadow-soft border border-brown-100/60 flex items-center justify-center">
+            <div className="w-7 h-7 rounded-full bg-white shadow-soft border border-brown-100/60 flex items-center justify-center">
               <svg className="w-4 h-4 text-brown-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
               </svg>

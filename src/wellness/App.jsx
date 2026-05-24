@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import './App.css';
+
 
 import LeftPanel from './components/LeftPanel';
 import NotificationsPanel from './components/NotificationsPanel';
@@ -378,7 +378,7 @@ export default function App() {
             <button
               id="notification-btn"
               onClick={handleNotifBell}
-              className="relative w-10 h-10 rounded-full bg-card shadow-soft flex items-center justify-center text-brown-600 hover:bg-brown-100/50 transition-colors"
+              className="relative w-10 h-10 rounded-full bg-white shadow-soft flex items-center justify-center text-brown-600 hover:bg-brown-100/50 transition-colors"
               aria-label="Notifications"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
@@ -394,7 +394,7 @@ export default function App() {
             {/* Profile icon — hidden on desktop navigation since it's already in sidebar */}
             <button
               onClick={() => openDrawer('profile')}
-              className="relative w-10 h-10 rounded-full bg-card shadow-soft flex items-center justify-center text-brown-600 hover:bg-brown-100/50 transition-colors md:hidden"
+              className="relative w-10 h-10 rounded-full bg-white shadow-soft flex items-center justify-center text-brown-600 hover:bg-brown-100/50 transition-colors md:hidden"
               aria-label="Profile"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
@@ -424,7 +424,7 @@ export default function App() {
                 <QuickActions onOpenDrawer={openDrawer} />
                 
                 {/* Desktop-only secondary widget */}
-                <div className="hidden md:block bg-card rounded-2xl p-4 shadow-soft border border-white mt-auto">
+                <div className="hidden md:block bg-white rounded-2xl p-4 shadow-soft border border-white mt-auto">
                   <div className="flex items-center justify-between mb-2">
                     <h3 className="text-xs font-bold text-brown-600 uppercase tracking-wide">Claims Overview</h3>
                     <button onClick={() => openDrawer('claims')} className="text-[10px] text-sage-500 font-semibold hover:underline">View All</button>
@@ -441,7 +441,7 @@ export default function App() {
           </div>
 
           {/* White sheet — flows below, scrolls up over the sticky top */}
-          <div className="relative z-20 bg-card rounded-t-[28px] shadow-[0_-4px_24px_-6px_rgba(31,58,77,0.10)] mt-2 min-h-[100%]">
+          <div className="relative z-20 bg-white rounded-t-[28px] shadow-[0_-4px_24px_-6px_rgba(31,58,77,0.10)] mt-2 min-h-[100%]">
             <div className="max-w-4xl mx-auto px-5 md:px-8 pt-6 pb-28 md:pb-12 space-y-6">
               <BrowseCard />
               <FavoritesSection

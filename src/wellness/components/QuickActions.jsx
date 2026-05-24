@@ -41,7 +41,7 @@ const actions = [
 
 export default function QuickActions({ onOpenDrawer }) {
   return (
-    <div className="bg-card rounded-2xl shadow-soft p-3 mp-anim mp-anim-2">
+    <div className="bg-white rounded-2xl shadow-soft p-3 mp-anim mp-anim-2">
       <div className="flex gap-1">
         {actions.map((action) => (
           <button

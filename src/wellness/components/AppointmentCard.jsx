@@ -4,7 +4,7 @@ export default function AppointmentCard({ appointment, onCheckIn, onOpenReschedu
   const { title, practitioner, date, time, location, avatar, checkedIn } = appointment;
 
   return (
-    <div className="bg-card rounded-3xl p-5 shadow-soft relative overflow-hidden mp-anim mp-anim-1 hover:shadow-md transition-shadow duration-300">
+    <div className="bg-white rounded-3xl p-5 shadow-soft relative overflow-hidden mp-anim mp-anim-1 hover:shadow-md transition-shadow duration-300">
       <div className="absolute -right-10 -top-10 w-32 h-32 bg-sage-100 rounded-full opacity-50 pointer-events-none"></div>
 
       <div className="flex items-center gap-4 relative z-10">
