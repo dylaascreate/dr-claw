@@ -283,14 +283,14 @@ export default function DrawerTrack({ show, onClose, onSubmitted, showToast }) {
         {/* STEP 2 — Symptoms */}
         {STEPS[step] === 'Symptoms' && (
           <Section title="Any symptoms today?" hint="Tap all that apply. Leave empty if you feel fine.">
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-1 gap-2">
               {CONDITION_PROFILE.symptoms.map(s => {
                 const isOn = symptoms.includes(s.key);
                 return (
                   <button
                     key={s.key}
                     onClick={() => toggleSymptom(s.key)}
-                    className={`p-3 bg-white border rounded-2xl text-left shadow-sm transition-all flex items-center gap-2 ${
+                    className={`p-3 bg-white border rounded-2xl text-left shadow-sm transition-all flex items-center gap-3 ${
                       isOn ? 'border-sage-500 bg-sage-500/5' : 'border-brown-100 hover:border-brown-400'
                     }`}
                   >
