@@ -146,17 +146,45 @@ export default function DrawerTrack({ show, onClose, onSubmitted, showToast, nee
     onClose();
   };
 
-  // ── Insight summary (last 7 days) ──────────────────────────────────────────
-  const insight = useMemo(() => {
-    if (!recent.length) return null;
-    const medsCount = recent.filter(r => r.meds_taken).length;
-    const bps = recent
-      .map(r => r.measurements?.bp_systolic)
-      .filter(Boolean)
-      .map(Number);
-    const avgBp = bps.length ? Math.round(bps.reduce((a, b) => a + b, 0) / bps.length) : null;
-    return { medsCount, total: recent.length, avgBp };
+  // ── Daily check-in grid (last 7 days × time slots) ─────────────────────────
+  // Slots are doctor-determined; default to all 4. Each slot covers a 6h window.
+  const SLOTS = [
+    { key: 'morning',   label: 'Morning',   emoji: '🌅', startHour: 5,  endHour: 11 },
+    { key: 'afternoon', label: 'Afternoon', emoji: '☀️', startHour: 11, endHour: 17 },
+    { key: 'evening',   label: 'Evening',   emoji: '🌆', startHour: 17, endHour: 22 },
+    { key: 'night',     label: 'Night',     emoji: '🌙', startHour: 22, endHour: 29 }, // wraps past midnight
+  ];
+
+  const checklistGrid = useMemo(() => {
+    const now = new Date();
+    const days = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date(now);
+      d.setDate(now.getDate() - i);
+      const iso = d.toISOString().slice(0, 10);
+      const slots = SLOTS.map(slot => {
+        const match = recent.find(r => {
+          if (r.check_in_date !== iso) return false;
+          if (!r.created_at) return true; // legacy rows: count as morning by default
+          const h = new Date(r.created_at).getHours();
+          const end = slot.endHour > 24 ? slot.endHour - 24 : slot.endHour;
+          return slot.endHour > 24
+            ? (h >= slot.startHour || h < end)
+            : (h >= slot.startHour && h < slot.endHour);
+        });
+        // Determine status: done / missed / upcoming
+        const isToday = iso === now.toISOString().slice(0, 10);
+        const slotEndPassed = !isToday || now.getHours() >= (slot.endHour > 24 ? 24 : slot.endHour);
+        let status = 'upcoming';
+        if (match) status = 'done';
+        else if (slotEndPassed) status = 'missed';
+        return { ...slot, status };
+      });
+      days.push({ iso, label: d.toLocaleDateString('en', { weekday: 'short' }), dayNum: d.getDate(), slots });
+    }
+    return days;
   }, [recent]);
+
 
   return (
     <div
