@@ -1,29 +1,55 @@
 import React from 'react';
 
-const TREATMENTS = [
+const CONDITIONS = [
   {
-    name: 'Endocrinology Consultation',
-    short: 'Endocrinology',
-    price: 280,
-    duration: 45,
-    desc: 'Specialist review for diabetes, thyroid, and hormonal conditions. Includes medication assessment and HbA1c interpretation.',
-    img: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?q=80&w=200&auto=format&fit=crop',
+    name: "Alzheimer's Disease",
+    desc: 'Memory care, cognitive assessments, and caregiver support resources.',
+    img: 'https://images.unsplash.com/photo-1559757175-5700dde675bc?q=80&w=200&auto=format&fit=crop',
   },
   {
-    name: 'Cardiology Follow-up',
-    short: 'Cardiology',
-    price: 320,
-    duration: 45,
-    desc: 'Cardiac risk review for hypertension and heart disease management. ECG and blood pressure monitoring included.',
-    img: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?q=80&w=200&auto=format&fit=crop',
+    name: 'Arthritis',
+    desc: 'Joint pain management, mobility programs, and rheumatology follow-ups.',
+    img: 'https://images.unsplash.com/photo-1599045118108-bf9954418b76?q=80&w=200&auto=format&fit=crop',
   },
   {
-    name: 'Nephrology Assessment',
-    short: 'Nephrology',
-    price: 260,
-    duration: 40,
-    desc: 'Kidney function evaluation for CKD monitoring. Includes eGFR, creatinine, and urine protein review.',
+    name: 'Cancer',
+    desc: 'Oncology care plans, screening reminders, and survivorship support.',
+    img: 'https://images.unsplash.com/photo-1631815589968-fdb09a223b1e?q=80&w=200&auto=format&fit=crop',
+  },
+  {
+    name: 'Chronic Kidney Disease',
+    desc: 'eGFR monitoring, nephrology reviews, and dietary guidance.',
     img: 'https://images.unsplash.com/photo-1666214280391-8ff5bd3c0bf0?q=80&w=200&auto=format&fit=crop',
+  },
+  {
+    name: 'Chronic Liver Disease',
+    desc: 'Hepatology consults, LFT tracking, and lifestyle interventions.',
+    img: 'https://images.unsplash.com/photo-1581595219315-a187dd40c322?q=80&w=200&auto=format&fit=crop',
+  },
+  {
+    name: 'Chronic Respiratory Diseases',
+    desc: 'COPD & asthma management, spirometry, and pulmonology care.',
+    img: 'https://images.unsplash.com/photo-1584036561566-baf8f5f1b144?q=80&w=200&auto=format&fit=crop',
+  },
+  {
+    name: 'Diabetes',
+    desc: 'HbA1c monitoring, endocrinology reviews, and nutrition coaching.',
+    img: 'https://images.unsplash.com/photo-1579154204601-01588f351e67?q=80&w=200&auto=format&fit=crop',
+  },
+  {
+    name: 'Heart Disease',
+    desc: 'Cardiac risk reviews, BP tracking, and cardiology follow-ups.',
+    img: 'https://images.unsplash.com/photo-1628348070889-cb656235b4eb?q=80&w=200&auto=format&fit=crop',
+  },
+  {
+    name: 'Mental Health Disorders',
+    desc: 'Therapy access, mood tracking, and psychiatric care coordination.',
+    img: 'https://images.unsplash.com/photo-1494256997604-768d1f608cac?q=80&w=200&auto=format&fit=crop',
+  },
+  {
+    name: 'Obesity',
+    desc: 'Weight management programs, metabolic health, and lifestyle support.',
+    img: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?q=80&w=200&auto=format&fit=crop',
   },
 ];
 
@@ -40,10 +66,13 @@ export default function DrawerExplore({ show, onClose, onQuickBook }) {
       ></div>
 
       <div className="px-5 pb-3 border-b border-brown-100 flex items-center justify-between">
-        <h3 className="text-xl font-bold text-brown-800 font-serif">Explore Specialists</h3>
+        <div>
+          <h3 className="text-xl font-bold text-brown-800 font-serif">Explore Chronic Disease Management</h3>
+          <p className="text-xs text-brown-500 mt-0.5">Pick a condition to learn more and book care.</p>
+        </div>
         <button
           onClick={onClose}
-          className="w-8 h-8 rounded-full bg-brown-100 flex items-center justify-center text-brown-600 hover:bg-brown-100/80"
+          className="w-8 h-8 rounded-full bg-brown-100 flex items-center justify-center text-brown-600 hover:bg-brown-100/80 flex-shrink-0 ml-3"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
@@ -52,42 +81,43 @@ export default function DrawerExplore({ show, onClose, onQuickBook }) {
       </div>
 
       <div className="flex-1 overflow-y-auto custom-scrollbar p-5 space-y-6 text-left">
-        {/* Membership Banner */}
-        <div className="relative bg-gradient-to-tr from-sage-500 to-terracotta-500 text-white rounded-3xl p-5 overflow-hidden shadow-soft">
+        {/* Learn-all banner */}
+        <button
+          onClick={() => onQuickBook('All Chronic Conditions')}
+          className="w-full text-left relative bg-gradient-to-tr from-sage-500 to-terracotta-500 text-white rounded-3xl p-5 overflow-hidden shadow-soft hover:shadow-md transition-shadow active:scale-[0.99]"
+        >
           <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-white/10 rounded-full pointer-events-none"></div>
-          <h4 className="text-lg font-bold mb-1 font-serif">Care Plan Active</h4>
-          <p className="text-xs text-white/80 leading-relaxed max-w-[80%]">
-            You have 2 unused specialist consultations. Book your next follow-up to stay on track with your care plan.
+          <span className="inline-block px-2.5 py-0.5 bg-white/25 backdrop-blur-md rounded-full text-white text-[10px] font-semibold mb-2 border border-white/30 uppercase tracking-wider">
+            Overview
+          </span>
+          <h4 className="text-lg font-bold mb-1 font-serif">Learn About All Chronic Conditions</h4>
+          <p className="text-xs text-white/85 leading-relaxed max-w-[85%]">
+            A complete guide to managing long-term conditions — symptoms, monitoring, and care pathways.
           </p>
-        </div>
+        </button>
 
-        {/* Treatment list */}
-        <div className="space-y-4">
-          <h4 className="text-sm font-semibold text-brown-400 uppercase tracking-wider">
-            Specialist Departments
+        {/* Condition grid */}
+        <div className="space-y-3">
+          <h4 className="text-sm font-semibold text-brown-400 uppercase tracking-wider px-1">
+            Common Chronic Diseases
           </h4>
 
-          {TREATMENTS.map((t) => (
-            <div
-              key={t.name}
-              className="p-4 bg-white rounded-2xl shadow-sm border border-brown-100/40 flex gap-4 hover:shadow-md transition-shadow"
-            >
-              <img src={t.img} className="w-20 h-20 rounded-xl object-cover flex-shrink-0" alt={t.name} />
-              <div className="flex-1">
-                <h5 className="text-base font-semibold text-brown-800 font-serif">{t.name}</h5>
-                <p className="text-xs text-brown-500 mt-1 leading-relaxed">{t.desc}</p>
-                <div className="flex items-center justify-between mt-3">
-                  <span className="text-sm font-bold text-sage-500">${t.price} • {t.duration} min</span>
-                  <button
-                    onClick={() => onQuickBook(t.short)}
-                    className="text-xs font-semibold text-terracotta-500 hover:underline active:scale-95 transition-transform"
-                  >
-                    Quick Book
-                  </button>
+          <div className="grid grid-cols-2 gap-3">
+            {CONDITIONS.map((c) => (
+              <button
+                key={c.name}
+                onClick={() => onQuickBook(c.name)}
+                className="text-left p-3 bg-white rounded-2xl shadow-sm border border-brown-100/40 hover:shadow-md hover:border-sage-500/40 transition-all active:scale-[0.98] flex flex-col"
+              >
+                <div className="w-full aspect-[4/3] rounded-xl overflow-hidden mb-3 bg-brown-100/40">
+                  <img src={c.img} alt={c.name} className="w-full h-full object-cover" />
                 </div>
-              </div>
-            </div>
-          ))}
+                <h5 className="text-sm font-semibold text-brown-800 font-serif leading-tight">{c.name}</h5>
+                <p className="text-[11px] text-brown-500 mt-1 leading-snug line-clamp-2">{c.desc}</p>
+                <span className="mt-2 text-[11px] font-semibold text-terracotta-500">Learn more →</span>
+              </button>
+            ))}
+          </div>
         </div>
       </div>
     </div>
