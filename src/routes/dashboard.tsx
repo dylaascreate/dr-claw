@@ -3,6 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import WellnessApp from "../wellness/App.jsx";
 
 export const Route = createFileRoute("/dashboard")({
+  ssr: false,
   component: DashboardPage,
   head: () => ({
     meta: [
