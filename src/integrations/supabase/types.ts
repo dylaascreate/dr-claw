@@ -14,6 +14,57 @@ export type Database = {
   }
   public: {
     Tables: {
+      check_ins: {
+        Row: {
+          check_in_date: string
+          created_at: string
+          energy_level: number | null
+          feeling: string | null
+          follow_up: Json
+          id: string
+          lifestyle: Json
+          measurements: Json
+          meds_taken: boolean | null
+          missed_doses: boolean | null
+          notes: string | null
+          symptoms: Json
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          check_in_date?: string
+          created_at?: string
+          energy_level?: number | null
+          feeling?: string | null
+          follow_up?: Json
+          id?: string
+          lifestyle?: Json
+          measurements?: Json
+          meds_taken?: boolean | null
+          missed_doses?: boolean | null
+          notes?: string | null
+          symptoms?: Json
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          check_in_date?: string
+          created_at?: string
+          energy_level?: number | null
+          feeling?: string | null
+          follow_up?: Json
+          id?: string
+          lifestyle?: Json
+          measurements?: Json
+          meds_taken?: boolean | null
+          missed_doses?: boolean | null
+          notes?: string | null
+          symptoms?: Json
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       claims: {
         Row: {
           amount: number

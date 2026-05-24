@@ -24,6 +24,7 @@ import DrawerClaims from './components/DrawerClaims';
 import DrawerProfile from './components/DrawerProfile';
 import ModalWrapper from './components/ModalWrapper';
 import FindDoctorSection from './components/FindDoctorSection';
+import DrawerTrack from './components/DrawerTrack';
 
 // ── Initial data (seeded from vascular continuity profile) ───────────────────
 
@@ -139,10 +140,6 @@ export default function App() {
   };
 
   const handleOpenDrawer = (name) => {
-    if (name === 'track') {
-      handleTrackCheckIn();
-      return;
-    }
     openDrawer(name);
   };
 
@@ -231,8 +228,12 @@ export default function App() {
     handleSendMessage(text);
   };
 
-  const handleTrackCheckIn = () => {
-    appendDrClawReply(getTrackCheckInSummary(patientProfile));
+  const handleTrackSubmitted = (summary) => {
+    const flagged = summary?.symptoms?.length || 0;
+    const msg = flagged > 0
+      ? `Check-in saved — ${flagged} symptom${flagged > 1 ? 's' : ''} flagged. Dr Claw will review your trend.`
+      : 'Check-in saved — keep up the consistency 💪';
+    appendDrClawReply(msg);
   };
 
   const handleSimulateVoice = () => {
@@ -548,6 +549,13 @@ export default function App() {
           onClose={closeDrawer}
           onLogout={handleLogout}
           user={user}
+        />
+
+        <DrawerTrack
+          show={activeDrawer === 'track'}
+          onClose={closeDrawer}
+          onSubmitted={handleTrackSubmitted}
+          showToast={showToast}
         />
       </div>
 
