@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, Link, useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import logo from "@/assets/dr-claw-logo.png";
 import { supabase } from "@/integrations/supabase/client";
@@ -15,16 +15,19 @@ export const Route = createFileRoute("/")({
 
 function Login() {
   const navigate = useNavigate();
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    router.preloadRoute({ to: "/dashboard" }).catch(() => {});
     supabase.auth.getSession().then(({ data }) => {
       if (data.session) navigate({ to: "/dashboard" });
     });
-  }, [navigate]);
+  }, [navigate, router]);
+
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
