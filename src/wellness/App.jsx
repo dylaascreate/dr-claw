@@ -1,9 +1,17 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
-
-
-import LeftPanel from './components/LeftPanel';
+import {
+  patientProfile,
+  buildAppointmentFromProfile,
+  buildInitialNotifications,
+} from './continuity/patientProfile.js';
+import {
+  resolveChatInput,
+  buildDemoJourneyMessages,
+  getTrackCheckInSummary,
+  readDemoUserMode,
+} from './continuity/auraEngine.js';
 import NotificationsPanel from './components/NotificationsPanel';
 import AppointmentCard from './components/AppointmentCard';
 import QuickActions from './components/QuickActions';
@@ -18,44 +26,10 @@ import DrawerFavorites from './components/DrawerFavorites';
 import DrawerProfile from './components/DrawerProfile';
 import ModalWrapper from './components/ModalWrapper';
 
-// ── Initial data ──────────────────────────────────────────────────────────────
+// ── Initial data (seeded from vascular continuity profile) ───────────────────
 
-const INITIAL_APPOINTMENT = {
-  title: 'Diabetes Review & HbA1c Check',
-  practitioner: 'Dr. Sarah Lim',
-  date: 'Fri, Oct 24',
-  time: '10:00 AM',
-  location: 'KPJ Damansara Specialist',
-  avatar: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?q=80&w=200&auto=format&fit=crop',
-  checkedIn: false,
-};
-
-const INITIAL_NOTIFICATIONS = [
-  {
-    icon: '✅',
-    color: 'text-green-600',
-    bg: 'bg-green-50',
-    title: 'Appointment confirmed!',
-    desc: 'Diabetes Review — Fri, Oct 24 at 10:00 AM',
-    time: 'Just now',
-  },
-  {
-    icon: '💳',
-    color: 'text-blue-600',
-    bg: 'bg-blue-50',
-    title: 'Claim processed',
-    desc: 'Cardiology Consultation — RM 320.00 approved',
-    time: '2h ago',
-  },
-  {
-    icon: '💊',
-    color: 'text-purple-600',
-    bg: 'bg-purple-50',
-    title: 'Medication reminder',
-    desc: 'Metformin 500mg — due at 8:00 PM tonight',
-    time: '1d ago',
-  },
-];
+const INITIAL_APPOINTMENT = buildAppointmentFromProfile(patientProfile);
+const INITIAL_NOTIFICATIONS = buildInitialNotifications(patientProfile);
 
 const INITIAL_FAVORITES = [
   {
@@ -80,39 +54,6 @@ const INITIAL_CLAIMS = [
   { date: 'Sep 14, 2024', service: 'Nephrology Follow-up', amount: '250.00', status: 'pending' },
 ];
 
-const INITIAL_MESSAGES = [
-  {
-    sender: 'drclaw',
-    text: "Hi Joel! 👋 I'm Dr Claw, your chronic care assistant. How can I support you today?",
-  },
-  {
-    sender: 'drclaw',
-    text: "You have a Diabetes Review with Dr. Sarah Lim on Friday. Your last HbA1c was 7.2% — shall I pull up your trend?",
-  },
-];
-
-// ── AI response stubs ─────────────────────────────────────────────────────────
-
-function getDrClawResponse(message) {
-  const lower = message.toLowerCase();
-  if (lower.includes('hba1c') || lower.includes('diabetes') || lower.includes('sugar') || lower.includes('glucose')) {
-    return "Your last HbA1c was 7.2% — slightly above target. Dr. Sarah Lim recommends reviewing your diet and increasing your metformin dose. Want me to book a follow-up?";
-  }
-  if (lower.includes('claim') || lower.includes('submit')) {
-    return "To submit a claim, open the Claims section and tap 'New Claim'. Upload your specialist invoice and I'll guide you through the rest!";
-  }
-  if (lower.includes('medication') || lower.includes('medicine') || lower.includes('metformin')) {
-    return "You're currently on Metformin 500mg twice daily and Amlodipine 5mg once daily. Your next refill is due in 8 days. Want me to arrange a prescription renewal?";
-  }
-  if (lower.includes('book') || lower.includes('appoint')) {
-    return "I can help you book a specialist appointment. Which department — Endocrinology, Cardiology, or Nephrology?";
-  }
-  if (lower.includes('blood pressure') || lower.includes('bp') || lower.includes('heart')) {
-    return "Your last recorded BP was 138/88 mmHg. Dr. Marcus Tan recommends a follow-up cardiac assessment. Shall I schedule one?";
-  }
-  return "I'm here to help with appointments, medication reminders, lab results, and claims. What would you like to do?";
-}
-
 // ── App ───────────────────────────────────────────────────────────────────────
 
 export default function App() {
@@ -127,8 +68,10 @@ export default function App() {
   // Appointment
   const [appointment, setAppointment] = useState(INITIAL_APPOINTMENT);
 
-  // Chat messages
-  const [messages, setMessages] = useState(INITIAL_MESSAGES);
+  // Chat messages — 3-message guided demo journey keyed to login vs signup
+  const [messages, setMessages] = useState(() =>
+    buildDemoJourneyMessages(patientProfile, readDemoUserMode()),
+  );
   const [chatInput, setChatInput] = useState('');
 
   // Favorites
@@ -184,6 +127,14 @@ export default function App() {
   const openDrawer = (name) => {
     setActiveDrawer(name);
     setShowNotifications(false);
+  };
+
+  const handleOpenDrawer = (name) => {
+    if (name === 'track') {
+      handleTrackCheckIn();
+      return;
+    }
+    openDrawer(name);
   };
 
   const closeDrawer = () => setActiveDrawer(null);
@@ -248,22 +199,36 @@ export default function App() {
     setBookingParams(null);
   };
 
-  const handleSendMessage = (text) => {
-    const userMsg = { sender: 'user', text };
-    setMessages((prev) => [...prev, userMsg]);
-    setChatInput('');
+  const appendDrClawReply = (replyText) => {
     setTimeout(() => {
-      setMessages((prev) => [...prev, { sender: 'drclaw', text: getDrClawResponse(text) }]);
+      setMessages((prev) => [...prev, { sender: 'drclaw', text: replyText }]);
     }, 800);
+  };
+
+  const handleSendMessage = (text) => {
+    setChatInput('');
+    setMessages((prev) => [...prev, { sender: 'user', text }]);
+    const result = resolveChatInput({ message: text, profile: patientProfile });
+    appendDrClawReply(result.text);
+    if (result.workflow === 'booking') {
+      setTimeout(() => openDrawer('book'), 900);
+    }
+    if (result.workflow === 'claims') {
+      setTimeout(() => openDrawer('claims'), 900);
+    }
   };
 
   const handleSuggestedClick = (text) => {
     handleSendMessage(text);
   };
 
+  const handleTrackCheckIn = () => {
+    appendDrClawReply(getTrackCheckInSummary(patientProfile));
+  };
+
   const handleSimulateVoice = () => {
     openDrawer('chat');
-    setTimeout(() => handleSendMessage('What is my HbA1c trend?'), 300);
+    setTimeout(() => handleSendMessage('How are my steps this week compared to last week?'), 300);
   };
 
   const handleSubmitClaim = (claimData) => {
@@ -468,7 +433,7 @@ export default function App() {
 
               {/* Quick actions */}
               <div className="md:col-span-5 flex flex-col justify-between">
-                <QuickActions onOpenDrawer={openDrawer} />
+                <QuickActions onOpenDrawer={handleOpenDrawer} />
                 
                 {/* Desktop-only secondary widget */}
                 <div className="hidden md:block bg-white rounded-2xl p-4 shadow-soft border border-white mt-auto">

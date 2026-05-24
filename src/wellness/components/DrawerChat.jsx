@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { SUGGESTION_PROMPTS } from '../continuity/auraEngine.js';
 
 export default function DrawerChat({ show, onClose, messages, onSendMessage, onSuggestedClick, inline = false }) {
   const [inputVal, setInputVal] = useState('');
@@ -35,7 +36,7 @@ export default function DrawerChat({ show, onClose, messages, onSendMessage, onS
         </div>
         <div className="text-left">
           <h3 className="text-base font-semibold text-brown-800 font-serif">Dr Claw</h3>
-          <p className="text-xs text-brown-400">Chronic Care Assistant • Online</p>
+          <p className="text-xs text-brown-400">Vascular Continuity Companion • Online</p>
         </div>
       </div>
       {!inline && (
@@ -79,30 +80,15 @@ export default function DrawerChat({ show, onClose, messages, onSendMessage, onS
 
   const suggestionsPills = (
     <div className="px-5 py-3 flex gap-2 overflow-x-auto scrollbar-hide border-t border-brown-100 bg-white flex-shrink-0">
-      <button
-        onClick={() => onSuggestedClick('What is my HbA1c trend?')}
-        className="px-3.5 py-1.5 bg-cream rounded-full text-xs font-medium text-brown-600 shadow-sm border border-brown-100 hover:bg-brown-100/30 whitespace-nowrap"
-      >
-        📊 HbA1c Trend
-      </button>
-      <button
-        onClick={() => onSuggestedClick('How do I submit a claim?')}
-        className="px-3.5 py-1.5 bg-cream rounded-full text-xs font-medium text-brown-600 shadow-sm border border-brown-100 hover:bg-brown-100/30 whitespace-nowrap"
-      >
-        📋 Submit Claim
-      </button>
-      <button
-        onClick={() => onSuggestedClick('Remind me about my medication')}
-        className="px-3.5 py-1.5 bg-cream rounded-full text-xs font-medium text-brown-600 shadow-sm border border-brown-100 hover:bg-brown-100/30 whitespace-nowrap"
-      >
-        💊 Medication
-      </button>
-      <button
-        onClick={() => onSuggestedClick('Book a cardiology appointment')}
-        className="px-3.5 py-1.5 bg-cream rounded-full text-xs font-medium text-brown-600 shadow-sm border border-brown-100 hover:bg-brown-100/30 whitespace-nowrap"
-      >
-        🫀 Book Cardiology
-      </button>
+      {SUGGESTION_PROMPTS.map(({ label, prompt }) => (
+        <button
+          key={label}
+          onClick={() => onSuggestedClick(prompt)}
+          className="px-3.5 py-1.5 bg-cream rounded-full text-xs font-medium text-brown-600 shadow-sm border border-brown-100 hover:bg-brown-100/30 whitespace-nowrap"
+        >
+          {label}
+        </button>
+      ))}
     </div>
   );
 

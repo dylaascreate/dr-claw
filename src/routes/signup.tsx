@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate, Link, useRouter } from "@tanstack/react-r
 import { useEffect, useState } from "react";
 import logo from "@/assets/dr-claw-logo.png";
 import { supabase } from "@/integrations/supabase/client";
+import { writeDemoUserMode } from "@/wellness/continuity/auraEngine.js";
 
 export const Route = createFileRoute("/signup")({
   component: SignUp,
@@ -52,6 +53,7 @@ function SignUp() {
       setError(error.message);
       return;
     }
+    writeDemoUserMode("new_user");
     navigate({ to: "/dashboard" });
   };
 
