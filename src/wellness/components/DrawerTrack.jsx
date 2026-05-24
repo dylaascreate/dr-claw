@@ -394,22 +394,51 @@ export default function DrawerTrack({ show, onClose, onSubmitted, showToast, nee
               </ul>
             </Section>
 
-            {insight && (
-              <Section title="Your trend (last 7 days)" subtle>
-                <div className="space-y-2 text-sm text-brown-800">
-                  <div className="flex justify-between bg-white p-2.5 rounded-xl border border-brown-100">
-                    <span>Medication consistency</span>
-                    <strong className="text-sage-600">{insight.medsCount}/{insight.total} days</strong>
-                  </div>
-                  {insight.avgBp && (
-                    <div className="flex justify-between bg-white p-2.5 rounded-xl border border-brown-100">
-                      <span>Avg systolic BP</span>
-                      <strong className={insight.avgBp > 140 ? 'text-red-600' : 'text-sage-600'}>{insight.avgBp} mmHg</strong>
+            <Section title="Your check-in streak (last 7 days)" subtle>
+              <div className="bg-white rounded-2xl border border-brown-100 p-3">
+                {/* Slot header */}
+                <div className="grid grid-cols-[56px_repeat(4,1fr)] gap-1 mb-2 text-[10px] text-brown-500 font-medium">
+                  <div></div>
+                  {SLOTS.map(s => (
+                    <div key={s.key} className="text-center">
+                      <div className="text-base leading-none">{s.emoji}</div>
+                      <div className="mt-0.5">{s.label}</div>
                     </div>
-                  )}
+                  ))}
                 </div>
-              </Section>
-            )}
+                {/* Rows */}
+                <div className="space-y-1">
+                  {checklistGrid.map(day => (
+                    <div key={day.iso} className="grid grid-cols-[56px_repeat(4,1fr)] gap-1 items-center">
+                      <div className="text-[11px] text-brown-600">
+                        <div className="font-semibold">{day.label}</div>
+                        <div className="text-brown-400">{day.dayNum}</div>
+                      </div>
+                      {day.slots.map(slot => (
+                        <div
+                          key={slot.key}
+                          className={`h-9 rounded-lg flex items-center justify-center text-sm font-bold ${
+                            slot.status === 'done'
+                              ? 'bg-sage-500/15 text-sage-700 border border-sage-500/30'
+                              : slot.status === 'missed'
+                              ? 'bg-red-100 text-red-500 border border-red-200'
+                              : 'bg-brown-50 text-brown-300 border border-dashed border-brown-200'
+                          }`}
+                        >
+                          {slot.status === 'done' ? '✓' : slot.status === 'missed' ? '✗' : '·'}
+                        </div>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+                <div className="flex items-center gap-3 mt-3 pt-2.5 border-t border-brown-100 text-[10px] text-brown-500">
+                  <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded bg-sage-500/40"></span>Done</span>
+                  <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded bg-red-200"></span>Missed</span>
+                  <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded border border-dashed border-brown-300"></span>Upcoming</span>
+                </div>
+              </div>
+            </Section>
+
           </>
         )}
       </div>
