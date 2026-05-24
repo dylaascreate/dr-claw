@@ -1,0 +1,286 @@
+export const CONDITIONS = [
+  {
+    slug: 'alzheimers-disease',
+    name: "Alzheimer's Disease",
+    tagline: 'Progressive memory loss and cognitive decline.',
+    desc: 'Memory care, cognitive assessments, and caregiver support resources.',
+    img: 'https://images.unsplash.com/photo-1559757175-5700dde675bc?q=80&w=1200&auto=format&fit=crop',
+    specialist: 'Neurologist',
+    definition:
+      "Alzheimer's disease is a progressive neurodegenerative disorder that slowly destroys memory, thinking skills, and eventually the ability to carry out simple tasks. It is the most common cause of dementia in older adults.",
+    symptoms: [
+      'Memory loss that disrupts daily life',
+      'Difficulty planning or solving problems',
+      'Confusion with time or place',
+      'Changes in mood, personality, or social withdrawal',
+    ],
+    causes: [
+      'Build-up of amyloid plaques and tau tangles in the brain',
+      'Age (most common after 65)',
+      'Family history and genetic factors (e.g. APOE-e4)',
+      'Cardiovascular risk factors like hypertension and diabetes',
+    ],
+    management: [
+      'Cognitive stimulation and structured daily routines',
+      'Medications such as cholinesterase inhibitors and memantine',
+      'Regular physical activity and a Mediterranean-style diet',
+      'Caregiver support, safety planning, and care coordination',
+    ],
+  },
+  {
+    slug: 'arthritis',
+    name: 'Arthritis',
+    tagline: 'Chronic joint inflammation, stiffness, and pain.',
+    desc: 'Joint pain management, mobility programs, and rheumatology follow-ups.',
+    img: 'https://images.unsplash.com/photo-1599045118108-bf9954418b76?q=80&w=1200&auto=format&fit=crop',
+    specialist: 'Rheumatologist',
+    definition:
+      'Arthritis is inflammation of one or more joints, causing pain and stiffness that can worsen with age. The most common types are osteoarthritis and rheumatoid arthritis.',
+    symptoms: [
+      'Persistent joint pain and tenderness',
+      'Morning stiffness lasting more than 30 minutes',
+      'Reduced range of motion',
+      'Swelling, warmth, or redness around joints',
+    ],
+    causes: [
+      'Wear and tear of cartilage (osteoarthritis)',
+      'Autoimmune attack on joint lining (rheumatoid arthritis)',
+      'Previous joint injury or repetitive stress',
+      'Obesity and family history',
+    ],
+    management: [
+      'Low-impact exercise: swimming, cycling, physiotherapy',
+      'NSAIDs, DMARDs, or biologics as prescribed',
+      'Weight management to reduce joint load',
+      'Joint protection techniques and assistive devices',
+    ],
+  },
+  {
+    slug: 'cancer',
+    name: 'Cancer',
+    tagline: 'Uncontrolled growth of abnormal cells in the body.',
+    desc: 'Oncology care plans, screening reminders, and survivorship support.',
+    img: 'https://images.unsplash.com/photo-1631815589968-fdb09a223b1e?q=80&w=1200&auto=format&fit=crop',
+    specialist: 'Oncologist',
+    definition:
+      'Cancer is a group of diseases involving abnormal cell growth with the potential to invade or spread to other parts of the body. Early detection and personalized treatment dramatically improve outcomes.',
+    symptoms: [
+      'Unexplained weight loss or fatigue',
+      'New lumps, persistent pain, or skin changes',
+      'Changes in bowel or bladder habits',
+      'Persistent cough, hoarseness, or difficulty swallowing',
+    ],
+    causes: [
+      'Genetic mutations (inherited or acquired)',
+      'Tobacco, alcohol, and dietary factors',
+      'Exposure to UV radiation and certain chemicals',
+      'Chronic infections (e.g. HPV, hepatitis B/C)',
+    ],
+    management: [
+      'Regular screening based on age and risk profile',
+      'Surgery, chemotherapy, radiotherapy, or immunotherapy',
+      'Nutrition and rehabilitation support during treatment',
+      'Survivorship plans and mental health support',
+    ],
+  },
+  {
+    slug: 'chronic-kidney-disease',
+    name: 'Chronic Kidney Disease',
+    tagline: 'Gradual loss of kidney function over time.',
+    desc: 'eGFR monitoring, nephrology reviews, and dietary guidance.',
+    img: 'https://images.unsplash.com/photo-1666214280391-8ff5bd3c0bf0?q=80&w=1200&auto=format&fit=crop',
+    specialist: 'Nephrologist',
+    definition:
+      'Chronic Kidney Disease (CKD) is the gradual loss of kidney function. As kidneys filter less effectively, waste and fluid build up in the body, leading to complications if untreated.',
+    symptoms: [
+      'Swelling in feet and ankles',
+      'Fatigue, poor appetite, and nausea',
+      'Foamy or bloody urine',
+      'Difficulty concentrating and trouble sleeping',
+    ],
+    causes: [
+      'Diabetes and high blood pressure (most common)',
+      'Glomerulonephritis and polycystic kidney disease',
+      'Prolonged use of certain medications (e.g. NSAIDs)',
+      'Recurrent urinary tract infections',
+    ],
+    management: [
+      'Strict blood pressure and glucose control',
+      'Low-sodium, kidney-friendly diet',
+      'Regular eGFR, creatinine, and urine albumin monitoring',
+      'Nephrology referral for advanced stages and dialysis planning',
+    ],
+  },
+  {
+    slug: 'chronic-liver-disease',
+    name: 'Chronic Liver Disease',
+    tagline: 'Long-term liver damage affecting detoxification.',
+    desc: 'Hepatology consults, LFT tracking, and lifestyle interventions.',
+    img: 'https://images.unsplash.com/photo-1581595219315-a187dd40c322?q=80&w=1200&auto=format&fit=crop',
+    specialist: 'Hepatologist',
+    definition:
+      'Chronic liver disease is a progressive deterioration of liver function lasting more than six months. It includes conditions like fatty liver disease, hepatitis, and cirrhosis.',
+    symptoms: [
+      'Fatigue and persistent itching',
+      'Yellowing of skin or eyes (jaundice)',
+      'Swelling in the abdomen or legs',
+      'Easy bruising and dark urine',
+    ],
+    causes: [
+      'Chronic viral hepatitis (B or C)',
+      'Excessive alcohol consumption',
+      'Non-alcoholic fatty liver disease (NAFLD)',
+      'Autoimmune and genetic liver disorders',
+    ],
+    management: [
+      'Abstain from alcohol and hepatotoxic medications',
+      'Weight loss and Mediterranean-style diet',
+      'Antiviral therapy where indicated',
+      'Regular LFTs, fibroscan, and hepatology follow-ups',
+    ],
+  },
+  {
+    slug: 'chronic-respiratory-diseases',
+    name: 'Chronic Respiratory Diseases',
+    tagline: 'Long-term conditions of the airways and lungs.',
+    desc: 'COPD & asthma management, spirometry, and pulmonology care.',
+    img: 'https://images.unsplash.com/photo-1584036561566-baf8f5f1b144?q=80&w=1200&auto=format&fit=crop',
+    specialist: 'Pulmonologist',
+    definition:
+      'Chronic respiratory diseases such as asthma, COPD, and pulmonary fibrosis affect the airways and lungs, causing breathing difficulties that persist or worsen over time.',
+    symptoms: [
+      'Shortness of breath, especially with activity',
+      'Chronic cough with or without mucus',
+      'Wheezing and chest tightness',
+      'Frequent respiratory infections',
+    ],
+    causes: [
+      'Smoking and second-hand smoke',
+      'Long-term exposure to air pollution or workplace dust',
+      'Allergens and respiratory infections',
+      'Genetic conditions like alpha-1 antitrypsin deficiency',
+    ],
+    management: [
+      'Inhalers (bronchodilators and corticosteroids)',
+      'Pulmonary rehabilitation and breathing exercises',
+      'Smoking cessation and vaccination (flu, pneumococcal)',
+      'Routine spirometry and pulmonology reviews',
+    ],
+  },
+  {
+    slug: 'diabetes',
+    name: 'Diabetes',
+    tagline: 'Chronic high blood sugar from insulin issues.',
+    desc: 'HbA1c monitoring, endocrinology reviews, and nutrition coaching.',
+    img: 'https://images.unsplash.com/photo-1579154204601-01588f351e67?q=80&w=1200&auto=format&fit=crop',
+    specialist: 'Endocrinologist',
+    definition:
+      "Diabetes is a chronic condition where the body either doesn't produce enough insulin (Type 1) or can't use it effectively (Type 2), resulting in high blood glucose levels that damage organs over time.",
+    symptoms: [
+      'Excessive thirst and frequent urination',
+      'Unexplained weight loss and fatigue',
+      'Blurred vision',
+      'Slow-healing wounds and frequent infections',
+    ],
+    causes: [
+      'Autoimmune destruction of insulin cells (Type 1)',
+      'Insulin resistance from obesity and inactivity (Type 2)',
+      'Family history and genetics',
+      'Gestational hormones during pregnancy',
+    ],
+    management: [
+      'Balanced low-glycemic diet and regular exercise',
+      'Metformin, GLP-1 agonists, or insulin as prescribed',
+      'Daily glucose monitoring and quarterly HbA1c',
+      'Annual eye, foot, and kidney screening',
+    ],
+  },
+  {
+    slug: 'heart-disease',
+    name: 'Heart Disease',
+    tagline: 'Conditions affecting the heart and blood vessels.',
+    desc: 'Cardiac risk reviews, BP tracking, and cardiology follow-ups.',
+    img: 'https://images.unsplash.com/photo-1628348070889-cb656235b4eb?q=80&w=1200&auto=format&fit=crop',
+    specialist: 'Cardiologist',
+    definition:
+      'Heart disease covers a range of conditions affecting the heart, including coronary artery disease, heart failure, and arrhythmias. It remains a leading cause of death worldwide.',
+    symptoms: [
+      'Chest pain, pressure, or discomfort',
+      'Shortness of breath',
+      'Palpitations or irregular heartbeat',
+      'Swelling in legs and fatigue with exertion',
+    ],
+    causes: [
+      'High blood pressure and high cholesterol',
+      'Smoking, obesity, and physical inactivity',
+      'Diabetes and metabolic syndrome',
+      'Family history of cardiovascular disease',
+    ],
+    management: [
+      'Heart-healthy diet (DASH or Mediterranean)',
+      'Regular aerobic exercise, 150+ minutes weekly',
+      'Medications: statins, antihypertensives, antiplatelets',
+      'Routine BP, lipid panel, and ECG monitoring',
+    ],
+  },
+  {
+    slug: 'mental-health-disorders',
+    name: 'Mental Health Disorders',
+    tagline: 'Conditions affecting mood, thinking, and behavior.',
+    desc: 'Therapy access, mood tracking, and psychiatric care coordination.',
+    img: 'https://images.unsplash.com/photo-1494256997604-768d1f608cac?q=80&w=1200&auto=format&fit=crop',
+    specialist: 'Psychiatrist',
+    definition:
+      'Mental health disorders such as depression, anxiety, and bipolar disorder affect how a person thinks, feels, and behaves. They are common, treatable, and benefit greatly from early support.',
+    symptoms: [
+      'Persistent sadness, hopelessness, or irritability',
+      'Excessive worry, panic attacks, or restlessness',
+      'Changes in sleep, appetite, or energy',
+      'Difficulty concentrating or social withdrawal',
+    ],
+    causes: [
+      'Genetic and biological factors',
+      'Chronic stress, trauma, or grief',
+      'Substance use',
+      'Underlying medical conditions and hormonal changes',
+    ],
+    management: [
+      'Cognitive behavioral therapy (CBT) and counseling',
+      'Antidepressants, anxiolytics, or mood stabilizers',
+      'Mindfulness, exercise, and sleep hygiene',
+      'Strong social support and regular psychiatric review',
+    ],
+  },
+  {
+    slug: 'obesity',
+    name: 'Obesity',
+    tagline: 'Excess body fat that raises health risks.',
+    desc: 'Weight management programs, metabolic health, and lifestyle support.',
+    img: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?q=80&w=1200&auto=format&fit=crop',
+    specialist: 'Bariatric Physician',
+    definition:
+      'Obesity is a chronic condition defined by excessive body fat (typically BMI ≥ 30) that increases the risk of diabetes, heart disease, and several cancers. It is influenced by genetics, environment, and behavior.',
+    symptoms: [
+      'BMI ≥ 30 or large waist circumference',
+      'Breathlessness with mild activity',
+      'Joint and back pain',
+      'Snoring or sleep apnea',
+    ],
+    causes: [
+      'Caloric intake exceeding energy expenditure',
+      'Sedentary lifestyle',
+      'Genetic predisposition and hormonal imbalances',
+      'Certain medications and poor sleep',
+    ],
+    management: [
+      'Structured nutrition plan with calorie awareness',
+      'Regular exercise: strength + cardio',
+      'Behavioral therapy and group support',
+      'Medical or surgical options (GLP-1, bariatric surgery) when indicated',
+    ],
+  },
+];
+
+export function getConditionBySlug(slug) {
+  return CONDITIONS.find((c) => c.slug === slug);
+}
