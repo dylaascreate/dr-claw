@@ -75,13 +75,14 @@ export default function DrawerTrack({ show, onClose, onSubmitted, showToast, nee
       if (!user) return;
       const { data } = await supabase
         .from('check_ins')
-        .select('check_in_date, meds_taken, feeling, measurements, symptoms')
+        .select('check_in_date, created_at, meds_taken, feeling, measurements, symptoms')
         .eq('user_id', user.id)
         .order('check_in_date', { ascending: false })
-        .limit(7);
+        .limit(28); // up to 7 days × 4 slots
       setRecent(data || []);
     })();
   }, [show]);
+
 
   const triggersFollowUp = useMemo(
     () => symptoms.some(s => CONDITION_PROFILE.symptoms.find(x => x.key === s)?.triggersFollowUp),
@@ -145,17 +146,45 @@ export default function DrawerTrack({ show, onClose, onSubmitted, showToast, nee
     onClose();
   };
 
-  // ── Insight summary (last 7 days) ──────────────────────────────────────────
-  const insight = useMemo(() => {
-    if (!recent.length) return null;
-    const medsCount = recent.filter(r => r.meds_taken).length;
-    const bps = recent
-      .map(r => r.measurements?.bp_systolic)
-      .filter(Boolean)
-      .map(Number);
-    const avgBp = bps.length ? Math.round(bps.reduce((a, b) => a + b, 0) / bps.length) : null;
-    return { medsCount, total: recent.length, avgBp };
+  // ── Daily check-in grid (last 7 days × time slots) ─────────────────────────
+  // Slots are doctor-determined; default to all 4. Each slot covers a 6h window.
+  const SLOTS = [
+    { key: 'morning',   label: 'Morning',   emoji: '🌅', startHour: 5,  endHour: 11 },
+    { key: 'afternoon', label: 'Afternoon', emoji: '☀️', startHour: 11, endHour: 17 },
+    { key: 'evening',   label: 'Evening',   emoji: '🌆', startHour: 17, endHour: 22 },
+    { key: 'night',     label: 'Night',     emoji: '🌙', startHour: 22, endHour: 29 }, // wraps past midnight
+  ];
+
+  const checklistGrid = useMemo(() => {
+    const now = new Date();
+    const days = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date(now);
+      d.setDate(now.getDate() - i);
+      const iso = d.toISOString().slice(0, 10);
+      const slots = SLOTS.map(slot => {
+        const match = recent.find(r => {
+          if (r.check_in_date !== iso) return false;
+          if (!r.created_at) return true; // legacy rows: count as morning by default
+          const h = new Date(r.created_at).getHours();
+          const end = slot.endHour > 24 ? slot.endHour - 24 : slot.endHour;
+          return slot.endHour > 24
+            ? (h >= slot.startHour || h < end)
+            : (h >= slot.startHour && h < slot.endHour);
+        });
+        // Determine status: done / missed / upcoming
+        const isToday = iso === now.toISOString().slice(0, 10);
+        const slotEndPassed = !isToday || now.getHours() >= (slot.endHour > 24 ? 24 : slot.endHour);
+        let status = 'upcoming';
+        if (match) status = 'done';
+        else if (slotEndPassed) status = 'missed';
+        return { ...slot, status };
+      });
+      days.push({ iso, label: d.toLocaleDateString('en', { weekday: 'short' }), dayNum: d.getDate(), slots });
+    }
+    return days;
   }, [recent]);
+
 
   return (
     <div
@@ -365,22 +394,51 @@ export default function DrawerTrack({ show, onClose, onSubmitted, showToast, nee
               </ul>
             </Section>
 
-            {insight && (
-              <Section title="Your trend (last 7 days)" subtle>
-                <div className="space-y-2 text-sm text-brown-800">
-                  <div className="flex justify-between bg-white p-2.5 rounded-xl border border-brown-100">
-                    <span>Medication consistency</span>
-                    <strong className="text-sage-600">{insight.medsCount}/{insight.total} days</strong>
-                  </div>
-                  {insight.avgBp && (
-                    <div className="flex justify-between bg-white p-2.5 rounded-xl border border-brown-100">
-                      <span>Avg systolic BP</span>
-                      <strong className={insight.avgBp > 140 ? 'text-red-600' : 'text-sage-600'}>{insight.avgBp} mmHg</strong>
+            <Section title="Your check-in streak (last 7 days)" subtle>
+              <div className="bg-white rounded-2xl border border-brown-100 p-3">
+                {/* Slot header */}
+                <div className="grid grid-cols-[56px_repeat(4,1fr)] gap-1 mb-2 text-[10px] text-brown-500 font-medium">
+                  <div></div>
+                  {SLOTS.map(s => (
+                    <div key={s.key} className="text-center">
+                      <div className="text-base leading-none">{s.emoji}</div>
+                      <div className="mt-0.5">{s.label}</div>
                     </div>
-                  )}
+                  ))}
                 </div>
-              </Section>
-            )}
+                {/* Rows */}
+                <div className="space-y-1">
+                  {checklistGrid.map(day => (
+                    <div key={day.iso} className="grid grid-cols-[56px_repeat(4,1fr)] gap-1 items-center">
+                      <div className="text-[11px] text-brown-600">
+                        <div className="font-semibold">{day.label}</div>
+                        <div className="text-brown-400">{day.dayNum}</div>
+                      </div>
+                      {day.slots.map(slot => (
+                        <div
+                          key={slot.key}
+                          className={`h-9 rounded-lg flex items-center justify-center text-sm font-bold ${
+                            slot.status === 'done'
+                              ? 'bg-sage-500/15 text-sage-700 border border-sage-500/30'
+                              : slot.status === 'missed'
+                              ? 'bg-red-100 text-red-500 border border-red-200'
+                              : 'bg-brown-50 text-brown-300 border border-dashed border-brown-200'
+                          }`}
+                        >
+                          {slot.status === 'done' ? '✓' : slot.status === 'missed' ? '✗' : '·'}
+                        </div>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+                <div className="flex items-center gap-3 mt-3 pt-2.5 border-t border-brown-100 text-[10px] text-brown-500">
+                  <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded bg-sage-500/40"></span>Done</span>
+                  <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded bg-red-200"></span>Missed</span>
+                  <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded border border-dashed border-brown-300"></span>Upcoming</span>
+                </div>
+              </div>
+            </Section>
+
           </>
         )}
       </div>
