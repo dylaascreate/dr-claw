@@ -135,7 +135,7 @@ export default function DrawerBook({ show, onClose, preselectedParams, onConfirm
             2. Practitioner Preference
           </label>
           <div className="space-y-2">
-            {PRACTITIONERS.map((p) => {
+            {practitioners.map((p) => {
               const isSelected = selectedPractitioner.name === p.name;
               return (
                 <div
