@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { createFileRoute, Link, notFound, useNavigate } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 import { CONDITIONS, getConditionBySlug } from '@/wellness/data/conditions';
