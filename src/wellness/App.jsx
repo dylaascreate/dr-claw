@@ -144,6 +144,41 @@ export default function App() {
   // Booking pre-selection (from Explore or Favorites)
   const [bookingParams, setBookingParams] = useState(null);
 
+  // User state from Supabase
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+    };
+    fetchUser();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    if (user) {
+      const name = user.user_metadata?.name || user.user_metadata?.full_name || 'Joel';
+      setMessages(prev => {
+        const newMsgs = [...prev];
+        if (newMsgs[0] && newMsgs[0].sender === 'drclaw') {
+          newMsgs[0] = {
+            ...newMsgs[0],
+            text: `Hi ${name}! 👋 I'm Dr Claw, your chronic care assistant. How can I support you today?`
+          };
+        }
+        return newMsgs;
+      });
+    }
+  }, [user]);
+
+  const userName = user?.user_metadata?.name || user?.user_metadata?.full_name || 'Joel';
+
   // ── Helpers ────────────────────────────────────────────────────────────────
 
   const openDrawer = (name) => {
@@ -361,10 +396,10 @@ export default function App() {
             className="w-full flex items-center gap-3 text-left hover:bg-white/5 p-2 rounded-xl transition-all cursor-pointer"
           >
             <div className="w-10 h-10 rounded-full bg-sage-500/30 flex items-center justify-center font-bold text-white text-lg">
-              J
+              {userName.charAt(0).toUpperCase()}
             </div>
             <div>
-              <h4 className="text-sm font-semibold text-white">Joel 🌿</h4>
+              <h4 className="text-sm font-semibold text-white">{userName} 🌿</h4>
               <p className="text-xs text-white/50">Premium Member</p>
             </div>
           </button>
@@ -384,7 +419,7 @@ export default function App() {
         <header className="sticky top-0 flex items-center justify-between px-5 pt-6 pb-3 mp-anim-header flex-shrink-0 z-30 bg-cream md:px-8">
           <div className="text-left">
             <p className="text-xs font-semibold uppercase tracking-widest text-brown-400">Good morning</p>
-            <h1 className="text-2xl text-brown-800 font-serif leading-tight">Joel 👋</h1>
+            <h1 className="text-2xl text-brown-800 font-serif leading-tight">{userName} 👋</h1>
           </div>
           <div className="flex items-center gap-2">
             <button
@@ -544,6 +579,7 @@ export default function App() {
           show={activeDrawer === 'profile'}
           onClose={closeDrawer}
           onLogout={handleLogout}
+          user={user}
         />
       </div>
 

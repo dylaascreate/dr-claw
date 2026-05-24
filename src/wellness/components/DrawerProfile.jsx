@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 
 // ── Icons ─────────────────────────────────────────────────────────────────────
 
@@ -84,15 +85,35 @@ function SettingRow({ label, sublabel, children }) {
 
 // ── Sub-screens ───────────────────────────────────────────────────────────────
 
-function ScreenPersonalSettings({ onBack }) {
-  const [name, setName] = useState('Joel');
-  const [email, setEmail] = useState('joel@example.com');
+function ScreenPersonalSettings({ onBack, user }) {
+  const defaultName = user?.user_metadata?.name || user?.user_metadata?.full_name || 'Joel';
+  const defaultEmail = user?.email || 'joel@example.com';
+  const [name, setName] = useState(defaultName);
+  const [email, setEmail] = useState(defaultEmail);
   const [phone, setPhone] = useState('+60 12-345 6789');
   const [dob, setDob] = useState('1990-04-15');
   const [saved, setSaved] = useState(false);
 
-  const handleSave = () => {
+  useEffect(() => {
+    if (user) {
+      setName(user.user_metadata?.name || user.user_metadata?.full_name || 'Joel');
+      setEmail(user.email || 'joel@example.com');
+    }
+  }, [user]);
+
+  const handleSave = async () => {
     setSaved(true);
+    try {
+      const { error } = await supabase.auth.updateUser({
+        data: {
+          name: name,
+          full_name: name,
+        }
+      });
+      if (error) console.error("Error updating profile settings:", error.message);
+    } catch (err) {
+      console.error(err);
+    }
     setTimeout(() => setSaved(false), 2000);
   };
 
@@ -110,7 +131,7 @@ function ScreenPersonalSettings({ onBack }) {
         {/* Avatar */}
         <div className="flex flex-col items-center py-4">
           <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-terracotta-500 to-sage-500 flex items-center justify-center text-white text-3xl font-bold shadow-soft mb-3">
-            J
+            {name.charAt(0).toUpperCase()}
           </div>
           <button className="text-xs font-semibold text-sage-500 hover:underline">Change Photo</button>
         </div>
@@ -319,7 +340,7 @@ function ScreenFAQ({ onBack }) {
 
 // ── Main Drawer ───────────────────────────────────────────────────────────────
 
-export default function DrawerProfile({ show, onClose, onLogout }) {
+export default function DrawerProfile({ show, onClose, onLogout, user }) {
   const [screen, setScreen] = useState('menu'); // 'menu' | 'settings' | 'notifications' | 'faq'
 
   const handleClose = () => {
@@ -330,13 +351,13 @@ export default function DrawerProfile({ show, onClose, onLogout }) {
   const renderScreen = () => {
     switch (screen) {
       case 'settings':
-        return <ScreenPersonalSettings onBack={() => setScreen('menu')} />;
+        return <ScreenPersonalSettings onBack={() => setScreen('menu')} user={user} />;
       case 'notifications':
         return <ScreenNotifications onBack={() => setScreen('menu')} />;
       case 'faq':
         return <ScreenFAQ onBack={() => setScreen('menu')} />;
       default:
-        return <MenuScreen onClose={handleClose} onNavigate={setScreen} onLogout={onLogout} />;
+        return <MenuScreen onClose={handleClose} onNavigate={setScreen} onLogout={onLogout} user={user} />;
     }
   };
 
@@ -355,7 +376,10 @@ export default function DrawerProfile({ show, onClose, onLogout }) {
   );
 }
 
-function MenuScreen({ onClose, onNavigate, onLogout }) {
+function MenuScreen({ onClose, onNavigate, onLogout, user }) {
+  const userName = user?.user_metadata?.name || user?.user_metadata?.full_name || 'Joel';
+  const userEmail = user?.email || 'joel@example.com';
+
   return (
     <div className="flex flex-col h-full">
       {/* Header */}
@@ -368,11 +392,11 @@ function MenuScreen({ onClose, onNavigate, onLogout }) {
         {/* User card */}
         <div className="flex items-center gap-4 p-4 bg-gradient-to-tr from-terracotta-500/10 to-sage-500/10 rounded-2xl border border-brown-100/50">
           <div className="w-14 h-14 rounded-full bg-gradient-to-tr from-terracotta-500 to-sage-500 flex items-center justify-center text-white text-2xl font-bold shadow-soft flex-shrink-0">
-            J
+            {userName.charAt(0).toUpperCase()}
           </div>
           <div className="text-left">
-            <h4 className="text-base font-bold text-brown-800 font-serif">Joel</h4>
-            <p className="text-xs text-brown-500">joel@example.com</p>
+            <h4 className="text-base font-bold text-brown-800 font-serif">{userName}</h4>
+            <p className="text-xs text-brown-500">{userEmail}</p>
             <span className="inline-block mt-1 px-2 py-0.5 bg-sage-500/10 text-sage-500 text-[10px] font-bold rounded-full border border-sage-500/20">
               Premium Member
             </span>

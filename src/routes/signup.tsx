@@ -16,6 +16,7 @@ export const Route = createFileRoute("/signup")({
 function SignUp() {
   const navigate = useNavigate();
   const router = useRouter();
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -30,15 +31,21 @@ function SignUp() {
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-    if (!email || !password) {
-      setError("Please enter your email and password.");
+    if (!name || !email || !password) {
+      setError("Please enter your name, email, and password.");
       return;
     }
     setLoading(true);
     const { error } = await supabase.auth.signUp({
       email,
       password,
-      options: { emailRedirectTo: `${window.location.origin}/dashboard` },
+      options: {
+        emailRedirectTo: `${window.location.origin}/dashboard`,
+        data: {
+          name: name,
+          full_name: name,
+        },
+      },
     });
     setLoading(false);
     if (error) {
@@ -65,7 +72,17 @@ function SignUp() {
           onSubmit={submit}
           className="rounded-lg border border-border/60 bg-card/70 p-6 shadow-claw backdrop-blur"
         >
-          <label className="block text-sm font-medium">Email</label>
+          <label className="block text-sm font-medium">Name</label>
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Your name"
+            autoComplete="name"
+            className="mt-2 w-full rounded-md border border-input bg-background/60 px-3 py-2 text-sm text-foreground outline-none transition focus:border-accent focus:shadow-glow"
+          />
+
+          <label className="mt-4 block text-sm font-medium">Email</label>
           <input
             type="email"
             value={email}
