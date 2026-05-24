@@ -261,12 +261,19 @@ export default function App() {
     setNotifCount(0);
   };
 
-  const handleLogout = async () => {
-    closeDrawer();
-    await supabase.auth.signOut();
-    showToast('👋 You have been logged out.');
-    window.location.href = '/';
+  const handleLogout = () => {
+    // Optimistic: clear local session synchronously and redirect immediately.
+    // Fire the server sign-out in the background — no need to await the network.
+    try {
+      for (let i = localStorage.length - 1; i >= 0; i--) {
+        const k = localStorage.key(i);
+        if (k && k.startsWith('sb-')) localStorage.removeItem(k);
+      }
+    } catch {}
+    supabase.auth.signOut().catch(() => {});
+    window.location.replace('/');
   };
+
 
 
   const handleNotifBell = () => {
