@@ -1,5 +1,3 @@
-// Shared chronic condition data used by the Explore drawer and condition pages.
-
 export const CONDITIONS = [
   {
     slug: 'alzheimers-disease',

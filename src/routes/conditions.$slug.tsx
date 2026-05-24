@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { createFileRoute, Link, notFound, useNavigate } from '@tanstack/react-router';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { CONDITIONS, getConditionBySlug } from '@/wellness/data/conditions';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -43,22 +43,18 @@ function ConditionPage() {
   const navigate = useNavigate();
   const condition = getConditionBySlug(slug);
 
-  const [authed, setAuthed] = useState(true);
   useEffect(() => {
     let mounted = true;
     supabase.auth.getSession().then(({ data }) => {
       if (!mounted) return;
       if (!data.session) navigate({ to: '/' });
-      else setAuthed(true);
     });
     return () => {
       mounted = false;
     };
   }, [navigate]);
 
-  if (!condition) {
-    throw notFound();
-  }
+  if (!condition) throw notFound();
 
   const scrollTo = (id) => {
     const el = document.getElementById(id);
@@ -66,13 +62,15 @@ function ConditionPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FBF7F1] text-brown-800" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
-      {/* Top bar */}
+    <div
+      className="min-h-screen bg-[#FBF7F1] text-brown-800"
+      style={{ fontFamily: 'Inter, system-ui, sans-serif' }}
+    >
       <header className="sticky top-0 z-30 bg-[#FBF7F1]/85 backdrop-blur-md border-b border-brown-100/60">
         <div className="max-w-5xl mx-auto px-5 py-4 flex items-center justify-between">
           <Link
             to="/dashboard"
-            className="inline-flex items-center gap-2 text-sm font-medium text-brown-600 hover:text-brown-800 transition-colors"
+            className="inline-flex items-center gap-2 text-sm font-medium text-brown-600 hover:text-brown-800"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
@@ -85,7 +83,6 @@ function ConditionPage() {
         </div>
       </header>
 
-      {/* Hero */}
       <section className="relative overflow-hidden">
         <div className="max-w-5xl mx-auto px-5 pt-8 pb-10 md:pt-14 md:pb-16 grid md:grid-cols-2 gap-8 items-center">
           <div>
@@ -134,7 +131,6 @@ function ConditionPage() {
         </div>
       </section>
 
-      {/* Quick nav */}
       <nav className="sticky top-[57px] z-20 bg-[#FBF7F1]/85 backdrop-blur-md border-y border-brown-100/60">
         <div className="max-w-5xl mx-auto px-5 py-3 flex gap-2 overflow-x-auto custom-scrollbar">
           {SECTIONS.map((s) => (
@@ -149,7 +145,6 @@ function ConditionPage() {
         </div>
       </nav>
 
-      {/* Content sections */}
       <main className="max-w-5xl mx-auto px-5 py-12 space-y-14">
         <Section id="definition" eyebrow="Definition" title={`What is ${condition.name}?`}>
           <p className="text-base md:text-lg text-brown-600 leading-relaxed">{condition.definition}</p>
@@ -167,7 +162,6 @@ function ConditionPage() {
           <BulletGrid items={condition.management} accent="sage" />
         </Section>
 
-        {/* CTA */}
         <section className="relative bg-gradient-to-tr from-sage-500 to-terracotta-500 text-white rounded-3xl p-8 md:p-12 overflow-hidden shadow-premium">
           <div className="absolute -bottom-16 -right-16 w-64 h-64 bg-white/10 rounded-full pointer-events-none" />
           <div className="relative max-w-2xl">
@@ -193,7 +187,6 @@ function ConditionPage() {
           </div>
         </section>
 
-        {/* Related conditions */}
         <section>
           <h4 className="text-xs font-semibold text-brown-400 uppercase tracking-wider mb-4">
             Other chronic conditions

@@ -1,10 +1,57 @@
 import React from 'react';
-import { Link } from '@tanstack/react-router';
-import { CONDITIONS } from '../data/conditions';
 
-
-
-
+const CONDITIONS = [
+  {
+    name: "Alzheimer's Disease",
+    desc: 'Memory care, cognitive assessments, and caregiver support resources.',
+    img: 'https://images.unsplash.com/photo-1559757175-5700dde675bc?q=80&w=200&auto=format&fit=crop',
+  },
+  {
+    name: 'Arthritis',
+    desc: 'Joint pain management, mobility programs, and rheumatology follow-ups.',
+    img: 'https://images.unsplash.com/photo-1599045118108-bf9954418b76?q=80&w=200&auto=format&fit=crop',
+  },
+  {
+    name: 'Cancer',
+    desc: 'Oncology care plans, screening reminders, and survivorship support.',
+    img: 'https://images.unsplash.com/photo-1631815589968-fdb09a223b1e?q=80&w=200&auto=format&fit=crop',
+  },
+  {
+    name: 'Chronic Kidney Disease',
+    desc: 'eGFR monitoring, nephrology reviews, and dietary guidance.',
+    img: 'https://images.unsplash.com/photo-1666214280391-8ff5bd3c0bf0?q=80&w=200&auto=format&fit=crop',
+  },
+  {
+    name: 'Chronic Liver Disease',
+    desc: 'Hepatology consults, LFT tracking, and lifestyle interventions.',
+    img: 'https://images.unsplash.com/photo-1581595219315-a187dd40c322?q=80&w=200&auto=format&fit=crop',
+  },
+  {
+    name: 'Chronic Respiratory Diseases',
+    desc: 'COPD & asthma management, spirometry, and pulmonology care.',
+    img: 'https://images.unsplash.com/photo-1584036561566-baf8f5f1b144?q=80&w=200&auto=format&fit=crop',
+  },
+  {
+    name: 'Diabetes',
+    desc: 'HbA1c monitoring, endocrinology reviews, and nutrition coaching.',
+    img: 'https://images.unsplash.com/photo-1579154204601-01588f351e67?q=80&w=200&auto=format&fit=crop',
+  },
+  {
+    name: 'Heart Disease',
+    desc: 'Cardiac risk reviews, BP tracking, and cardiology follow-ups.',
+    img: 'https://images.unsplash.com/photo-1628348070889-cb656235b4eb?q=80&w=200&auto=format&fit=crop',
+  },
+  {
+    name: 'Mental Health Disorders',
+    desc: 'Therapy access, mood tracking, and psychiatric care coordination.',
+    img: 'https://images.unsplash.com/photo-1494256997604-768d1f608cac?q=80&w=200&auto=format&fit=crop',
+  },
+  {
+    name: 'Obesity',
+    desc: 'Weight management programs, metabolic health, and lifestyle support.',
+    img: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?q=80&w=200&auto=format&fit=crop',
+  },
+];
 
 export default function DrawerExplore({ show, onClose, onQuickBook }) {
   return (
@@ -57,11 +104,9 @@ export default function DrawerExplore({ show, onClose, onQuickBook }) {
 
           <div className="grid grid-cols-2 gap-3">
             {CONDITIONS.map((c) => (
-              <Link
-                key={c.slug}
-                to="/conditions/$slug"
-                params={{ slug: c.slug }}
-                onClick={onClose}
+              <button
+                key={c.name}
+                onClick={() => onQuickBook(c.name)}
                 className="text-left p-3 bg-white rounded-2xl shadow-sm border border-brown-100/40 hover:shadow-md hover:border-sage-500/40 transition-all active:scale-[0.98] flex flex-col"
               >
                 <div className="w-full aspect-[4/3] rounded-xl overflow-hidden mb-3 bg-brown-100/40">
@@ -70,7 +115,7 @@ export default function DrawerExplore({ show, onClose, onQuickBook }) {
                 <h5 className="text-sm font-semibold text-brown-800 font-serif leading-tight">{c.name}</h5>
                 <p className="text-[11px] text-brown-500 mt-1 leading-snug line-clamp-2">{c.desc}</p>
                 <span className="mt-2 text-[11px] font-semibold text-terracotta-500">Learn more →</span>
-              </Link>
+              </button>
             ))}
           </div>
         </div>
