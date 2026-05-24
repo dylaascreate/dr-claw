@@ -31,7 +31,7 @@ const FEELINGS = [
 
 const STEPS = ['Essentials', 'Measurements', 'Symptoms', 'Follow-up', 'Review'];
 
-export default function DrawerTrack({ show, onClose, onSubmitted, showToast }) {
+export default function DrawerTrack({ show, onClose, onSubmitted, showToast, needsMonitoring = true, onBookAppointment }) {
   const [step, setStep] = useState(0);
 
   // Step 1 — Daily essentials
