@@ -13,13 +13,19 @@ export const Route = createFileRoute("/")({
 });
 
 function Login() {
+  const navigate = useNavigate();
   const [agentId, setAgentId] = useState("");
   const [passphrase, setPassphrase] = useState("");
   const [status, setStatus] = useState<null | "ok" | "deny">(null);
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
-    setStatus(agentId && passphrase ? "ok" : "deny");
+    if (agentId && passphrase) {
+      setStatus("ok");
+      setTimeout(() => navigate({ to: "/dashboard" }), 600);
+    } else {
+      setStatus("deny");
+    }
   };
 
   return (
