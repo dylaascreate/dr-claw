@@ -272,7 +272,9 @@ export default function App() {
       date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
       service: claimData.treatmentType,
       amount: parseFloat(claimData.amount).toFixed(2),
-      status: 'pending',
+      stage: 'submitted',
+      insurer: claimData.insurer,
+      claimType: claimData.claimType || 'self',
     };
     setClaims((prev) => [newClaim, ...prev]);
     showToast('📋 Claim submitted successfully!');
