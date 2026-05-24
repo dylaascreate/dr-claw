@@ -31,7 +31,7 @@ const FEELINGS = [
 
 const STEPS = ['Essentials', 'Measurements', 'Symptoms', 'Follow-up', 'Review'];
 
-export default function DrawerTrack({ show, onClose, onSubmitted, showToast }) {
+export default function DrawerTrack({ show, onClose, onSubmitted, showToast, needsMonitoring = true, onBookAppointment }) {
   const [step, setStep] = useState(0);
 
   // Step 1 — Daily essentials
@@ -167,6 +167,12 @@ export default function DrawerTrack({ show, onClose, onSubmitted, showToast }) {
         className="w-12 h-1.5 bg-brown-400/30 rounded-full mx-auto my-3 flex-shrink-0 cursor-pointer"
         onClick={onClose}
       />
+
+      {!needsMonitoring ? (
+        <NoMonitoringView onClose={onClose} onBookAppointment={onBookAppointment} />
+      ) : (
+      <>
+
 
       {/* Header */}
       <div className="px-5 pb-3 border-b border-brown-100 flex items-center justify-between">
@@ -407,9 +413,66 @@ export default function DrawerTrack({ show, onClose, onSubmitted, showToast }) {
           </button>
         )}
       </div>
+      </>
+      )}
     </div>
   );
 }
+
+// ── No-monitoring view (healthy / no chronic treatment) ─────────────────────
+function NoMonitoringView({ onClose, onBookAppointment }) {
+  return (
+    <div className="flex-1 flex flex-col">
+      <div className="px-5 pb-3 border-b border-brown-100 flex items-center justify-between">
+        <div>
+          <h3 className="text-xl font-bold text-brown-800 font-serif">Stay on track</h3>
+          <p className="text-[11px] text-brown-500 mt-0.5">No active monitoring plan</p>
+        </div>
+        <button
+          onClick={onClose}
+          className="w-8 h-8 rounded-full bg-brown-100 flex items-center justify-center text-brown-600 hover:bg-brown-100/80"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <div className="flex-1 overflow-y-auto custom-scrollbar p-5 space-y-5 text-left">
+        <div className="text-center pt-6">
+          <div className="text-5xl mb-3">🌿</div>
+          <h4 className="text-lg font-bold text-brown-800 font-serif">You're all good</h4>
+          <p className="text-sm text-brown-500 mt-1 max-w-xs mx-auto">
+            No daily check-ins needed right now. Just keep up with your regular visits.
+          </p>
+        </div>
+
+        <div className="bg-white border border-brown-100 rounded-2xl p-4 shadow-sm space-y-3">
+          <div className="flex items-start gap-3">
+            <span className="text-2xl">📅</span>
+            <div>
+              <p className="text-sm font-semibold text-brown-800">Book your next appointment</p>
+              <p className="text-xs text-brown-500 mt-0.5">
+                Routine check-ups help catch things early. We'll find a slot that works for you.
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={onBookAppointment}
+            className="w-full py-3 rounded-2xl bg-brown-800 text-white text-sm font-semibold hover:bg-brown-700 transition-all"
+          >
+            Book appointment
+          </button>
+        </div>
+
+        <p className="text-[11px] text-brown-400 text-center px-4">
+          If your doctor starts a treatment plan, daily tracking will turn on automatically.
+        </p>
+      </div>
+    </div>
+  );
+}
+
 
 // ── Small presentational helpers ────────────────────────────────────────────
 
