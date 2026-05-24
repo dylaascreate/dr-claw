@@ -1,30 +1,24 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import logo from "@/assets/dr-claw-logo.png";
 import { supabase } from "@/integrations/supabase/client";
 
-export const Route = createFileRoute("/")({
-  component: Login,
+export const Route = createFileRoute("/signup")({
+  component: SignUp,
   head: () => ({
     meta: [
-      { title: "Dr. Claw Health AI — Login" },
-      { name: "description", content: "Sign in to Dr. Claw Health AI." },
+      { title: "Dr. Claw Health AI — Sign up" },
+      { name: "description", content: "Create your Dr. Claw Health AI account." },
     ],
   }),
 });
 
-function Login() {
+function SignUp() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      if (data.session) navigate({ to: "/dashboard" });
-    });
-  }, [navigate]);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,7 +28,11 @@ function Login() {
       return;
     }
     setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { emailRedirectTo: `${window.location.origin}/dashboard` },
+    });
     setLoading(false);
     if (error) {
       setError(error.message);
@@ -49,10 +47,10 @@ function Login() {
         <div className="mb-8 flex flex-col items-center text-center">
           <img src={logo} alt="Dr. Claw Health AI" className="h-40 w-40 object-contain" />
           <h1 className="mt-4 font-display text-2xl font-semibold tracking-tight">
-            Welcome back
+            Create your account
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Sign in to continue to your dashboard.
+            Get started with Dr. Claw Health AI.
           </p>
         </div>
 
@@ -75,8 +73,8 @@ function Login() {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="••••••••"
-            autoComplete="current-password"
+            placeholder="At least 6 characters"
+            autoComplete="new-password"
             className="mt-2 w-full rounded-md border border-input bg-background/60 px-3 py-2 text-sm text-foreground outline-none transition focus:border-accent focus:shadow-glow"
           />
 
@@ -85,7 +83,7 @@ function Login() {
             disabled={loading}
             className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-md bg-accent px-4 py-2.5 text-sm font-medium text-accent-foreground transition hover:brightness-110 active:translate-y-px disabled:opacity-60"
           >
-            {loading ? "Signing in…" : "Login"}
+            {loading ? "Creating account…" : "Sign up"}
           </button>
 
           {error && (
@@ -93,9 +91,9 @@ function Login() {
           )}
 
           <p className="mt-6 text-center text-sm text-muted-foreground">
-            Don't have an account?{" "}
-            <Link to="/signup" className="font-medium text-accent hover:underline">
-              Sign up
+            Already have an account?{" "}
+            <Link to="/" className="font-medium text-accent hover:underline">
+              Log in
             </Link>
           </p>
         </form>
