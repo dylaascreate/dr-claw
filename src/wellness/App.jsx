@@ -1,4 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+
 
 
 import LeftPanel from './components/LeftPanel';
@@ -259,10 +261,13 @@ export default function App() {
     setNotifCount(0);
   };
 
-  const handleLogout = () => {
-    showToast('👋 You have been logged out.');
+  const handleLogout = async () => {
     closeDrawer();
+    await supabase.auth.signOut();
+    showToast('👋 You have been logged out.');
+    window.location.href = '/';
   };
+
 
   const handleNotifBell = () => {
     setShowNotifications((prev) => !prev);
