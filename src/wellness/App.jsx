@@ -23,6 +23,7 @@ import DrawerExplore from './components/DrawerExplore';
 import DrawerClaims from './components/DrawerClaims';
 import DrawerProfile from './components/DrawerProfile';
 import ModalWrapper from './components/ModalWrapper';
+import FindDoctorSection from './components/FindDoctorSection';
 
 // ── Initial data (seeded from vascular continuity profile) ───────────────────
 
@@ -460,8 +461,14 @@ export default function App() {
 
           {/* White sheet — flows below, scrolls up over the sticky top */}
           <div className="relative z-20 bg-white rounded-t-[28px] shadow-[0_-4px_24px_-6px_rgba(31,58,77,0.10)] mt-2 min-h-[100%]">
-            <div className="max-w-4xl mx-auto px-5 md:px-8 pt-6 pb-28 md:pb-12 space-y-6">
+            <div className="max-w-4xl mx-auto px-5 md:px-8 pt-6 pb-28 md:pb-12 space-y-8">
               <BrowseCard />
+              <FindDoctorSection
+                onBookDoctor={(params) => {
+                  setBookingParams(params);
+                  openDrawer('book');
+                }}
+              />
             </div>
           </div>
 
