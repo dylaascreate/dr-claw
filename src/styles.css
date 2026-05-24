@@ -156,3 +156,52 @@
     color: var(--color-foreground);
   }
 }
+
+/* ── Wellness portal theme (used by /dashboard) ───────────────────────── */
+@theme inline {
+  --color-cream: #E8F3FB;
+  --color-brown-800: #0D2D45;
+  --color-brown-600: #3D6480;
+  --color-brown-400: #7AAAC8;
+  --color-brown-100: #C8DFF0;
+  --color-sage-500: #1A6FA8;
+  --color-sage-100: #C8E2F5;
+  --color-terracotta-500: #1A6FA8;
+  --color-terracotta-100: #C8E2F5;
+  --font-serif: 'DM Serif Display', Georgia, serif;
+  --shadow-soft: 0 10px 40px -10px rgba(13, 45, 69, 0.12);
+  --shadow-premium: 0 20px 50px -15px rgba(13, 45, 69, 0.15);
+}
+
+@keyframes mp-fade-up { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes mp-fade-down { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes mp-fade-footer { from { opacity: 0; transform: translateY(60px); } to { opacity: 1; transform: translateY(0); } }
+.mp-anim { opacity: 0; animation: mp-fade-up 0.5s ease-out forwards; }
+.mp-anim-header { opacity: 0; animation: mp-fade-down 0.5s ease-out forwards; animation-delay: 0.1s; }
+.mp-anim-1 { animation-delay: 0.2s; }
+.mp-anim-2 { animation-delay: 0.3s; }
+.mp-anim-3 { animation-delay: 0.4s; }
+.mp-anim-4 { animation-delay: 0.5s; }
+.mp-anim-footer { opacity: 0; animation: mp-fade-footer 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards; animation-delay: 0.5s; }
+@keyframes pulse-wave { 0%, 100% { transform: scaleY(0.3); } 50% { transform: scaleY(1); } }
+.wave-bar { animation: pulse-wave 1s ease-in-out infinite; }
+.wave-bar:nth-child(2) { animation-delay: 0.15s; }
+.wave-bar:nth-child(3) { animation-delay: 0.3s; }
+.wave-bar:nth-child(4) { animation-delay: 0.45s; }
+.wave-bar:nth-child(5) { animation-delay: 0.6s; }
+@keyframes breathe { 0%, 100% { transform: scale(1); background-color: rgba(26, 111, 168, 0.08); } 50% { transform: scale(1.15); background-color: rgba(26, 111, 168, 0.18); } }
+.breath-ring { animation: breathe 8s ease-in-out infinite; }
+.custom-scrollbar::-webkit-scrollbar { width: 0px; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+
+.wellness-root {
+  background: #E8F3FB;
+  color: #0D2D45;
+  font-family: 'Inter', sans-serif;
+}
+.wellness-root h1, .wellness-root h2, .wellness-root h3,
+.wellness-root h4, .wellness-root h5, .wellness-root h6 {
+  font-family: 'DM Serif Display', serif;
+  font-weight: 400;
+}
