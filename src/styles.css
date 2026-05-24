@@ -97,10 +97,10 @@
   --sidebar-ring: oklch(0.55 0.16 245);
 
   --font-display: "Georgia", "Times New Roman", serif;
-  --shadow-claw: 0 20px 60px -20px oklch(0 0 0 / 0.6), 0 0 0 1px oklch(0.72 0.19 55 / 0.08);
-  --shadow-glow: 0 0 24px -4px oklch(0.72 0.19 55 / 0.55);
-  --bg-claw-vignette: radial-gradient(ellipse at center, transparent 0%, oklch(0.08 0.02 25 / 0.85) 100%);
-  --bg-claw-scanlines: repeating-linear-gradient(0deg, oklch(1 0 0 / 0.04) 0px, oklch(1 0 0 / 0.04) 1px, transparent 1px, transparent 3px);
+  --shadow-claw: 0 20px 60px -20px oklch(0.55 0.16 245 / 0.25), 0 0 0 1px oklch(0.55 0.16 245 / 0.08);
+  --shadow-glow: 0 0 24px -4px oklch(0.55 0.16 245 / 0.45);
+  --bg-claw-vignette: radial-gradient(ellipse at center, transparent 0%, oklch(0.85 0.04 240 / 0.4) 100%);
+  --bg-claw-scanlines: repeating-linear-gradient(0deg, oklch(0.55 0.16 245 / 0.02) 0px, oklch(0.55 0.16 245 / 0.02) 1px, transparent 1px, transparent 3px);
 }
 
 @theme inline {
