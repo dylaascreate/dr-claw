@@ -140,10 +140,6 @@ export default function App() {
   };
 
   const handleOpenDrawer = (name) => {
-    if (name === 'track') {
-      handleTrackCheckIn();
-      return;
-    }
     openDrawer(name);
   };
 
