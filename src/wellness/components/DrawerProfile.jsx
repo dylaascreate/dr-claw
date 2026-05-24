@@ -171,6 +171,19 @@ function ScreenPersonalSettings({ onBack, user }) {
           </div>
         </div>
 
+        {/* Care mode */}
+        <div className="pt-2">
+          <p className="text-xs font-semibold uppercase tracking-wider text-brown-400 mb-3">Care Mode</p>
+          <SettingRow
+            label={needsMonitoring ? 'Daily monitoring on' : 'No active monitoring'}
+            sublabel={needsMonitoring
+              ? 'Track page shows your full daily check-in flow.'
+              : 'Track page just helps you book your next appointment.'}
+          >
+            <Toggle enabled={needsMonitoring} onChange={setNeedsMonitoring} />
+          </SettingRow>
+        </div>
+
         {/* Password section */}
         <div className="pt-2">
           <p className="text-xs font-semibold uppercase tracking-wider text-brown-400 mb-3">Security</p>
@@ -179,6 +192,7 @@ function ScreenPersonalSettings({ onBack, user }) {
             <IconChevron />
           </button>
         </div>
+
 
         <button
           onClick={handleSave}
