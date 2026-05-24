@@ -576,9 +576,12 @@ export default function App() {
           show={activeDrawer === 'claims'}
           onClose={closeDrawer}
           claims={claims}
+          claimsLoading={claimsLoading}
           onSubmitClaim={handleSubmitClaim}
           showToast={showToast}
+          isAuthed={!!user}
         />
+
 
         <DrawerFavorites
           show={activeDrawer === 'favorites'}
