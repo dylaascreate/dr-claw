@@ -75,13 +75,14 @@ export default function DrawerTrack({ show, onClose, onSubmitted, showToast, nee
       if (!user) return;
       const { data } = await supabase
         .from('check_ins')
-        .select('check_in_date, meds_taken, feeling, measurements, symptoms')
+        .select('check_in_date, created_at, meds_taken, feeling, measurements, symptoms')
         .eq('user_id', user.id)
         .order('check_in_date', { ascending: false })
-        .limit(7);
+        .limit(28); // up to 7 days × 4 slots
       setRecent(data || []);
     })();
   }, [show]);
+
 
   const triggersFollowUp = useMemo(
     () => symptoms.some(s => CONDITION_PROFILE.symptoms.find(x => x.key === s)?.triggersFollowUp),
