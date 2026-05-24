@@ -118,6 +118,36 @@ export default function App() {
     }
   }, [user]);
 
+  // Load claims for current user
+  const loadClaims = async (uid) => {
+    if (!uid) { setClaims([]); return; }
+    setClaimsLoading(true);
+    const { data, error } = await supabase
+      .from('claims')
+      .select('*')
+      .eq('user_id', uid)
+      .order('created_at', { ascending: false });
+    if (!error && data) {
+      setClaims(data.map(c => ({
+        id: c.id,
+        date: new Date(c.claim_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+        service: c.service,
+        amount: Number(c.amount).toFixed(2),
+        stage: c.stage,
+        insurer: c.insurer,
+        claimType: c.claim_type,
+        remarks: c.remarks,
+        filePath: c.file_path,
+        fileName: c.file_name,
+      })));
+    }
+    setClaimsLoading(false);
+  };
+
+  useEffect(() => {
+    loadClaims(user?.id);
+  }, [user?.id]);
+
   const userName = user?.user_metadata?.name || user?.user_metadata?.full_name || 'Joel';
 
   // ── Helpers ────────────────────────────────────────────────────────────────
