@@ -14,7 +14,125 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      conditions: {
+        Row: {
+          category: string
+          created_at: string
+          id: string
+          name: string
+          primary_specialty_id: string
+          secondary_specialty_id: string | null
+          slug: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          id?: string
+          name: string
+          primary_specialty_id: string
+          secondary_specialty_id?: string | null
+          slug: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          id?: string
+          name?: string
+          primary_specialty_id?: string
+          secondary_specialty_id?: string | null
+          slug?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conditions_primary_specialty_id_fkey"
+            columns: ["primary_specialty_id"]
+            isOneToOne: false
+            referencedRelation: "specialties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "conditions_secondary_specialty_id_fkey"
+            columns: ["secondary_specialty_id"]
+            isOneToOne: false
+            referencedRelation: "specialties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      doctors: {
+        Row: {
+          accepting_new_patients: boolean
+          avatar_url: string | null
+          bio: string | null
+          clinic_location: string | null
+          created_at: string
+          full_name: string
+          id: string
+          languages: string[]
+          specialty_id: string
+          title: string
+          years_experience: number
+        }
+        Insert: {
+          accepting_new_patients?: boolean
+          avatar_url?: string | null
+          bio?: string | null
+          clinic_location?: string | null
+          created_at?: string
+          full_name: string
+          id?: string
+          languages?: string[]
+          specialty_id: string
+          title?: string
+          years_experience?: number
+        }
+        Update: {
+          accepting_new_patients?: boolean
+          avatar_url?: string | null
+          bio?: string | null
+          clinic_location?: string | null
+          created_at?: string
+          full_name?: string
+          id?: string
+          languages?: string[]
+          specialty_id?: string
+          title?: string
+          years_experience?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "doctors_specialty_id_fkey"
+            columns: ["specialty_id"]
+            isOneToOne: false
+            referencedRelation: "specialties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      specialties: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          slug: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          slug: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          slug?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
