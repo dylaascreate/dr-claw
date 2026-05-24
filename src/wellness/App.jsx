@@ -24,6 +24,7 @@ import DrawerClaims from './components/DrawerClaims';
 import DrawerProfile from './components/DrawerProfile';
 import ModalWrapper from './components/ModalWrapper';
 import FindDoctorSection from './components/FindDoctorSection';
+import DrawerTrack from './components/DrawerTrack';
 
 // ── Initial data (seeded from vascular continuity profile) ───────────────────
 
