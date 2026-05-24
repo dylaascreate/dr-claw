@@ -75,7 +75,8 @@ export default function App() {
   const [favorites, setFavorites] = useState(INITIAL_FAVORITES);
 
   // Claims
-  const [claims, setClaims] = useState(INITIAL_CLAIMS);
+  const [claims, setClaims] = useState([]);
+  const [claimsLoading, setClaimsLoading] = useState(false);
 
   // Toast notification
   const [toast, setToast] = useState(null);
