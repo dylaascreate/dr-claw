@@ -1,6 +1,7 @@
 // @ts-nocheck
 import { createFileRoute, Link, notFound, useNavigate } from '@tanstack/react-router';
 import { useEffect } from 'react';
+import { toast } from 'sonner';
 import { CONDITIONS, getConditionBySlug } from '@/wellness/data/conditions';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -101,7 +102,7 @@ function ConditionPage() {
 
             <div className="mt-6 flex flex-wrap gap-3">
               <button
-                onClick={() => navigate({ to: '/dashboard' })}
+                onClick={() => toast('Specialist booking coming soon', { description: `We'll soon connect you with a ${condition.specialist.toLowerCase()}.` })}
                 className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-terracotta-500 text-white text-sm font-semibold shadow-soft hover:bg-terracotta-500/90 active:scale-[0.98] transition-all"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
@@ -176,7 +177,7 @@ function ConditionPage() {
               We'll match you with the right specialist and handle the booking.
             </p>
             <button
-              onClick={() => navigate({ to: '/dashboard' })}
+              onClick={() => toast('Specialist booking coming soon', { description: `We'll soon connect you with a ${condition.specialist.toLowerCase()}.` })}
               className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white text-brown-800 text-sm font-semibold shadow-soft hover:bg-white/95 active:scale-[0.98] transition-all"
             >
               Book a {condition.specialist}
