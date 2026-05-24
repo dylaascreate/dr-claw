@@ -24,6 +24,7 @@ const TIMES = ['10:00 AM', '11:30 AM', '2:00 PM', '4:30 PM'];
 
 export default function DrawerBook({ show, onClose, preselectedParams, onConfirm }) {
   const [selectedService, setSelectedService] = useState(SERVICES[0]);
+  const [practitioners, setPractitioners] = useState(PRACTITIONERS);
   const [selectedPractitioner, setSelectedPractitioner] = useState(PRACTITIONERS[0]);
   const [selectedDate, setSelectedDate] = useState(DATES[0]);
   const [selectedTime, setSelectedTime] = useState(TIMES[0]);
@@ -36,8 +37,20 @@ export default function DrawerBook({ show, onClose, preselectedParams, onConfirm
         if (match) setSelectedService(match);
       }
       if (preselectedParams.practitioner) {
-        const match = PRACTITIONERS.find(p => p.name.toLowerCase() === preselectedParams.practitioner.toLowerCase());
-        if (match) setSelectedPractitioner(match);
+        const existing = practitioners.find(p => p.name.toLowerCase() === preselectedParams.practitioner.toLowerCase());
+        if (existing) {
+          setSelectedPractitioner(existing);
+        } else {
+          // Inject the doctor passed in from Find a Doctor (Supabase data)
+          const injected = {
+            name: preselectedParams.practitioner,
+            role: preselectedParams.role || 'Specialist',
+            rating: preselectedParams.rating || '4.9',
+            avatar: preselectedParams.avatar || PRACTITIONERS[0].avatar,
+          };
+          setPractitioners(prev => [injected, ...prev.filter(p => p.name !== injected.name)]);
+          setSelectedPractitioner(injected);
+        }
       }
       if (preselectedParams.date) {
         const match = DATES.find(d => d.full.toLowerCase() === preselectedParams.date.toLowerCase());
@@ -122,7 +135,7 @@ export default function DrawerBook({ show, onClose, preselectedParams, onConfirm
             2. Practitioner Preference
           </label>
           <div className="space-y-2">
-            {PRACTITIONERS.map((p) => {
+            {practitioners.map((p) => {
               const isSelected = selectedPractitioner.name === p.name;
               return (
                 <div
