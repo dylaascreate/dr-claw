@@ -168,6 +168,12 @@ export default function DrawerTrack({ show, onClose, onSubmitted, showToast, nee
         onClick={onClose}
       />
 
+      {!needsMonitoring ? (
+        <NoMonitoringView onClose={onClose} onBookAppointment={onBookAppointment} />
+      ) : (
+      <>
+
+
       {/* Header */}
       <div className="px-5 pb-3 border-b border-brown-100 flex items-center justify-between">
         <div>
