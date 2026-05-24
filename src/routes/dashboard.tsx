@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 // @ts-expect-error - JSX module without types
 import WellnessApp from "../wellness/App.jsx";
@@ -23,25 +23,32 @@ export const Route = createFileRoute("/dashboard")({
   }),
 });
 
+function hasStoredSession() {
+  if (typeof window === "undefined") return true;
+  try {
+    for (let i = 0; i < window.localStorage.length; i++) {
+      const k = window.localStorage.key(i);
+      if (k && k.startsWith("sb-") && k.endsWith("-auth-token")) return true;
+    }
+  } catch {
+    // ignore
+  }
+  return false;
+}
+
 function DashboardPage() {
   const navigate = useNavigate();
-  const [ready, setReady] = useState(false);
 
   useEffect(() => {
+    if (!hasStoredSession()) {
+      navigate({ to: "/" });
+      return;
+    }
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, session) => {
       if (!session) navigate({ to: "/" });
     });
-    supabase.auth.getSession().then(({ data }) => {
-      if (!data.session) {
-        navigate({ to: "/" });
-      } else {
-        setReady(true);
-      }
-    });
     return () => subscription.unsubscribe();
   }, [navigate]);
-
-  if (!ready) return null;
 
   return (
     <div className="wellness-root">
