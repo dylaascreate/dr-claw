@@ -1,4 +1,7 @@
 import React from 'react';
+import { Link } from '@tanstack/react-router';
+import { CONDITIONS } from '../data/conditions';
+
 
 const CONDITIONS = [
   {
