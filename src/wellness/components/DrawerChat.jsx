@@ -34,7 +34,7 @@ export default function DrawerChat({ show, onClose, messages, onSendMessage, onS
           <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-white"></span>
         </div>
         <div className="text-left">
-          <h3 className="text-base font-semibold text-brown-800 font-serif">Aura AI</h3>
+          <h3 className="text-base font-semibold text-brown-800 font-serif">Dr Claw</h3>
           <p className="text-xs text-brown-400">Chronic Care Assistant • Online</p>
         </div>
       </div>
@@ -123,7 +123,7 @@ export default function DrawerChat({ show, onClose, messages, onSendMessage, onS
             onChange={(e) => setInputVal(e.target.value)}
             onKeyDown={handleKeyDown}
             type="text"
-            placeholder="Message Aura AI..."
+            placeholder="Message Dr Claw..."
             className="flex-1 bg-transparent outline-none text-sm text-brown-800 placeholder:text-brown-400 px-2 py-1.5"
             aria-label="Message"
           />
