@@ -259,18 +259,36 @@ export default function App() {
     setTimeout(() => handleSendMessage('How are my steps this week compared to last week?'), 300);
   };
 
-  const handleSubmitClaim = (claimData) => {
-    const newClaim = {
-      date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+  const handleSubmitClaim = async (claimData) => {
+    if (!user) { showToast('Please sign in to submit a claim', 'error'); return; }
+    let filePath = null;
+    let fileName = null;
+    if (claimData.file) {
+      const ext = claimData.file.name.split('.').pop();
+      const path = `${user.id}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+      const { error: upErr } = await supabase.storage
+        .from('claim-receipts').upload(path, claimData.file, { upsert: false });
+      if (upErr) { showToast('Upload failed: ' + upErr.message, 'error'); return; }
+      filePath = path;
+      fileName = claimData.file.name;
+    }
+    const { data, error } = await supabase.from('claims').insert({
+      user_id: user.id,
       service: claimData.treatmentType,
-      amount: parseFloat(claimData.amount).toFixed(2),
-      stage: 'submitted',
+      amount: parseFloat(claimData.amount || '0'),
       insurer: claimData.insurer,
-      claimType: claimData.claimType || 'self',
-    };
-    setClaims((prev) => [newClaim, ...prev]);
+      claim_type: claimData.claimType || 'self',
+      stage: 'submitted',
+      file_path: filePath,
+      file_name: fileName,
+      claim_date: claimData.claimDate || new Date().toISOString().split('T')[0],
+    }).select().single();
+    if (error) { showToast('Submit failed: ' + error.message, 'error'); return; }
+    await loadClaims(user.id);
     showToast('📋 Claim submitted successfully!');
+    return data;
   };
+
 
   const handleToggleFavorite = (name) => {
     setFavorites((prev) => prev.filter((f) => f.name !== name));
