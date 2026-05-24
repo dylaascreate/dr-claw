@@ -1,5 +1,5 @@
-import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { createFileRoute, useNavigate, Link, useRouter } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import logo from "@/assets/dr-claw-logo.png";
 import { supabase } from "@/integrations/supabase/client";
 
