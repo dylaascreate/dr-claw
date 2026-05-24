@@ -1,4 +1,14 @@
 import { useState, useEffect, useRef } from 'react';
+import { useNavigate }  from '@tanstack/react-router';
+
+import { supabase } from '@/integrations/supabase/client';
+import {
+  useGetAppointments,
+  useBookAppointment,
+  useCheckInAppointment,
+  useGetAllAppointments,
+} from '@/hooks/useAppointments';
+
 
 
 import LeftPanel from './components/LeftPanel';
@@ -14,6 +24,7 @@ import DrawerExplore from './components/DrawerExplore';
 import DrawerClaims from './components/DrawerClaims';
 import DrawerFavorites from './components/DrawerFavorites';
 import DrawerProfile from './components/DrawerProfile';
+import DrawerSchedule from './components/DrawerSchedule';
 import ModalWrapper from './components/ModalWrapper';
 
 // ── Initial data ──────────────────────────────────────────────────────────────
@@ -80,18 +91,18 @@ const INITIAL_CLAIMS = [
 
 const INITIAL_MESSAGES = [
   {
-    sender: 'aura',
-    text: "Hi Joel! 👋 I'm Aura, your chronic care assistant. How can I support you today?",
+    sender: 'drclaw',
+    text: "Hi Joel! 👋 I'm Dr Claw, your chronic care assistant. How can I support you today?",
   },
   {
-    sender: 'aura',
+    sender: 'drclaw',
     text: "You have a Diabetes Review with Dr. Sarah Lim on Friday. Your last HbA1c was 7.2% — shall I pull up your trend?",
   },
 ];
 
 // ── AI response stubs ─────────────────────────────────────────────────────────
 
-function getAuraResponse(message) {
+function getDrClawResponse(message) {
   const lower = message.toLowerCase();
   if (lower.includes('hba1c') || lower.includes('diabetes') || lower.includes('sugar') || lower.includes('glucose')) {
     return "Your last HbA1c was 7.2% — slightly above target. Dr. Sarah Lim recommends reviewing your diet and increasing your metformin dose. Want me to book a follow-up?";
@@ -114,6 +125,7 @@ function getAuraResponse(message) {
 // ── App ───────────────────────────────────────────────────────────────────────
 
 export default function App() {
+  const navigate = useNavigate();
   // Active drawer/modal state
   const [activeDrawer, setActiveDrawer] = useState(null); // 'book' | 'chat' | 'explore' | 'claims' | 'favorites' | 'profile'
 
@@ -122,8 +134,24 @@ export default function App() {
   const [notifications, setNotifications] = useState(INITIAL_NOTIFICATIONS);
   const [notifCount, setNotifCount] = useState(INITIAL_NOTIFICATIONS.length);
 
-  // Appointment
-  const [appointment, setAppointment] = useState(INITIAL_APPOINTMENT);
+  // Appointment (backed by Supabase via React Query)
+  const { data: appointmentRow } = useGetAppointments();
+  const { data: allAppointments = [] } = useGetAllAppointments();
+  const bookAppointment = useBookAppointment();
+  const checkInAppointment = useCheckInAppointment();
+
+  const appointment = appointmentRow
+    ? {
+        id: appointmentRow.id,
+        title: appointmentRow.title,
+        practitioner: appointmentRow.practitioner,
+        date: appointmentRow.date,
+        time: appointmentRow.time,
+        location: appointmentRow.location,
+        avatar: appointmentRow.avatar_url,
+        checkedIn: appointmentRow.checked_in,
+      }
+    : INITIAL_APPOINTMENT;
 
   // Chat messages
   const [messages, setMessages] = useState(INITIAL_MESSAGES);
@@ -160,7 +188,9 @@ export default function App() {
   // ── Handlers ───────────────────────────────────────────────────────────────
 
   const handleCheckIn = () => {
-    setAppointment((prev) => ({ ...prev, checkedIn: true }));
+    if (appointmentRow?.id) {
+      checkInAppointment.mutate(appointmentRow.id);
+    }
     showToast('✅ Checked in! See you at KPJ Damansara Specialist.');
     setNotifications((prev) => [
       {
@@ -185,15 +215,7 @@ export default function App() {
   };
 
   const handleBookingConfirm = (params) => {
-    setAppointment({
-      title: params.serviceName,
-      practitioner: params.practitioner,
-      date: params.date,
-      time: params.time,
-      location: 'KPJ Damansara Specialist',
-      avatar: params.avatar,
-      checkedIn: false,
-    });
+    bookAppointment.mutate(params);
     closeDrawer();
     showToast(`🗓 Booked ${params.serviceName} on ${params.date} at ${params.time}!`);
     setNotifications((prev) => [
@@ -216,7 +238,7 @@ export default function App() {
     setMessages((prev) => [...prev, userMsg]);
     setChatInput('');
     setTimeout(() => {
-      setMessages((prev) => [...prev, { sender: 'aura', text: getAuraResponse(text) }]);
+      setMessages((prev) => [...prev, { sender: 'drclaw', text: getDrClawResponse(text) }]);
     }, 800);
   };
 
@@ -260,9 +282,13 @@ export default function App() {
   };
 
   const handleLogout = () => {
-    showToast('👋 You have been logged out.');
     closeDrawer();
+    navigate({ to: '/' });           // instant client-side navigation
+    supabase.auth.signOut();         // background cleanup — no await
+    showToast('👋 You have been logged out.');
   };
+
+
 
   const handleNotifBell = () => {
     setShowNotifications((prev) => !prev);
@@ -287,7 +313,7 @@ export default function App() {
               </svg>
             </div>
             <div>
-              <h2 className="text-xl font-bold tracking-tight text-white/90 font-serif">CareTrack</h2>
+              <h2 className="text-xl font-bold tracking-tight text-white/90 font-serif">Dr Claw</h2>
               <p className="text-[10px] text-white/50 tracking-wider">CHRONIC CARE PORTAL</p>
             </div>
           </div>
@@ -532,6 +558,12 @@ export default function App() {
           show={activeDrawer === 'profile'}
           onClose={closeDrawer}
           onLogout={handleLogout}
+        />
+
+        <DrawerSchedule
+          show={activeDrawer === 'schedule'}
+          onClose={closeDrawer}
+          appointments={allAppointments}
         />
       </div>
 

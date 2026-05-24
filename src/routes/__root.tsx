@@ -9,6 +9,7 @@ import {
 } from "@tanstack/react-router";
 
 import appCss from "../styles.css?url";
+import { Toaster } from "@/components/ui/sonner";
 
 function NotFoundComponent() {
   return (
@@ -72,18 +73,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "dr claw" },
+      { title: "dr claw booking" },
       { name: "description", content: "Dr Claw is a web application that provides a secure login page for healthcare applications." },
       { name: "author", content: "Lovable" },
-      { property: "og:title", content: "dr claw" },
+      { property: "og:title", content: "dr claw booking" },
       { property: "og:description", content: "Dr Claw is a web application that provides a secure login page for healthcare applications." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
-      { name: "twitter:title", content: "dr claw" },
+      { name: "twitter:title", content: "dr claw booking" },
       { name: "twitter:description", content: "Dr Claw is a web application that provides a secure login page for healthcare applications." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/3ec673eb-4f36-4e7b-a2b9-937566cb62b5/id-preview-e163c96a--f2de7019-20bd-4b80-9093-974ceb226c42.lovable.app-1779589730209.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/3ec673eb-4f36-4e7b-a2b9-937566cb62b5/id-preview-e163c96a--f2de7019-20bd-4b80-9093-974ceb226c42.lovable.app-1779589730209.png" },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/73fb3b6f-b6b7-42b4-8435-92330a445d34/id-preview-e86328d2--6e880124-9fa9-41a7-856e-80414fede19f.lovable.app-1779595821029.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/73fb3b6f-b6b7-42b4-8435-92330a445d34/id-preview-e86328d2--6e880124-9fa9-41a7-856e-80414fede19f.lovable.app-1779595821029.png" },
     ],
     links: [
       {
@@ -118,6 +119,7 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <Outlet />
+      <Toaster />
     </QueryClientProvider>
   );
 }

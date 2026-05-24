@@ -250,8 +250,8 @@ const FAQ_ITEMS = [
     a: 'Most claims are reviewed within 3–5 business days. You\'ll receive a push notification and email once a decision is made.',
   },
   {
-    q: 'What is Aura AI?',
-    a: 'Aura AI is your personal wellness assistant. It can help you book appointments, answer health questions, guide breathing exercises, and navigate your insurance benefits.',
+    q: 'What is Dr Claw?',
+    a: 'Dr Claw is your personal wellness assistant. It can help you book appointments, answer health questions, guide breathing exercises, and navigate your insurance benefits.',
   },
   {
     q: 'How do I add a practitioner to Favourites?',
@@ -423,7 +423,7 @@ function MenuScreen({ onClose, onNavigate, onLogout }) {
         </div>
 
         {/* App version */}
-        <p className="text-center text-[10px] text-brown-300">Aura Wellness v2.4.1</p>
+        <p className="text-center text-[10px] text-brown-300">Dr Claw v2.4.1</p>
       </div>
     </div>
   );
