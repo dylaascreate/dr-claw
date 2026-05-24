@@ -4,7 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 // ── Condition profile (vascular / hypertension default for Joel) ────────────
 // Easy to extend: add more profiles keyed by condition slug.
 const CONDITION_PROFILE = {
-  label: 'Vascular + Hypertension',
+  label: 'Heart & Metabolic',
   measurements: [
     { key: 'bp_systolic', label: 'BP Systolic', unit: 'mmHg', placeholder: '120', min: 60, max: 250 },
     { key: 'bp_diastolic', label: 'BP Diastolic', unit: 'mmHg', placeholder: '80', min: 40, max: 150 },
