@@ -16,13 +16,11 @@ import NotificationsPanel from './components/NotificationsPanel';
 import AppointmentCard from './components/AppointmentCard';
 import QuickActions from './components/QuickActions';
 import BrowseCard from './components/BrowseCard';
-import FavoritesSection from './components/FavoritesSection';
 import ChatFooter from './components/ChatFooter';
 import DrawerBook from './components/DrawerBook';
 import DrawerChat from './components/DrawerChat';
 import DrawerExplore from './components/DrawerExplore';
 import DrawerClaims from './components/DrawerClaims';
-import DrawerFavorites from './components/DrawerFavorites';
 import DrawerProfile from './components/DrawerProfile';
 import ModalWrapper from './components/ModalWrapper';
 
@@ -31,22 +29,6 @@ import ModalWrapper from './components/ModalWrapper';
 const INITIAL_APPOINTMENT = buildAppointmentFromProfile(patientProfile);
 const INITIAL_NOTIFICATIONS = buildInitialNotifications(patientProfile);
 
-const INITIAL_FAVORITES = [
-  {
-    name: 'Dr. Sarah Lim',
-    role: 'Endocrinologist',
-    rating: '4.9',
-    signature: 'Diabetes Review & HbA1c Check',
-    avatar: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?q=80&w=200&auto=format&fit=crop',
-  },
-  {
-    name: 'Dr. Marcus Tan',
-    role: 'Cardiologist',
-    rating: '4.8',
-    signature: 'Cardiac Risk Assessment',
-    avatar: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?q=80&w=200&auto=format&fit=crop',
-  },
-];
 
 // Claims now loaded from Supabase per user (blank slate by default)
 
@@ -71,8 +53,6 @@ export default function App() {
   );
   const [chatInput, setChatInput] = useState('');
 
-  // Favorites
-  const [favorites, setFavorites] = useState(INITIAL_FAVORITES);
 
   // Claims
   const [claims, setClaims] = useState([]);
@@ -390,15 +370,6 @@ export default function App() {
               </svg>
               Insurance Claims
             </button>
-            <button
-              onClick={() => openDrawer('favorites')}
-              className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 text-white/80 hover:text-white font-medium text-sm transition-all text-left"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-              </svg>
-              Saved Favorites
-            </button>
           </nav>
         </div>
 
@@ -504,10 +475,6 @@ export default function App() {
           <div className="relative z-20 bg-white rounded-t-[28px] shadow-[0_-4px_24px_-6px_rgba(31,58,77,0.10)] mt-2 min-h-[100%]">
             <div className="max-w-4xl mx-auto px-5 md:px-8 pt-6 pb-28 md:pb-12 space-y-6">
               <BrowseCard />
-              <FavoritesSection
-                favCount={favorites.length}
-                onOpenFavorites={() => openDrawer('favorites')}
-              />
             </div>
           </div>
 
