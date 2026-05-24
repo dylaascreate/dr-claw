@@ -75,9 +75,10 @@ const INITIAL_FAVORITES = [
 ];
 
 const INITIAL_CLAIMS = [
-  { date: 'Oct 18, 2024', service: 'Cardiology Consultation', amount: '320.00', status: 'approved' },
-  { date: 'Sep 30, 2024', service: 'HbA1c Blood Panel', amount: '180.00', status: 'approved' },
-  { date: 'Sep 14, 2024', service: 'Nephrology Follow-up', amount: '250.00', status: 'pending' },
+  { date: 'Oct 18, 2024', service: 'Cardiology Consultation', amount: '320.00', stage: 'credited', insurer: 'AIA', claimType: 'self' },
+  { date: 'Sep 30, 2024', service: 'HbA1c Blood Panel', amount: '180.00', stage: 'approved', insurer: 'Allianz Malaysia', claimType: 'self' },
+  { date: 'Sep 14, 2024', service: 'Nephrology Follow-up', amount: '250.00', stage: 'review', insurer: 'Prudential', claimType: 'self' },
+  { date: 'Sep 02, 2024', service: 'Vascular Surgeon Review', amount: '410.00', stage: 'submitted', insurer: 'Great Eastern', claimType: 'employer' },
 ];
 
 const INITIAL_MESSAGES = [
@@ -271,7 +272,9 @@ export default function App() {
       date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
       service: claimData.treatmentType,
       amount: parseFloat(claimData.amount).toFixed(2),
-      status: 'pending',
+      stage: 'submitted',
+      insurer: claimData.insurer,
+      claimType: claimData.claimType || 'self',
     };
     setClaims((prev) => [newClaim, ...prev]);
     showToast('📋 Claim submitted successfully!');
