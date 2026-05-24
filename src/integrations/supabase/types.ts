@@ -14,6 +14,54 @@ export type Database = {
   }
   public: {
     Tables: {
+      claims: {
+        Row: {
+          amount: number
+          claim_date: string
+          claim_type: string
+          created_at: string
+          file_name: string | null
+          file_path: string | null
+          id: string
+          insurer: string | null
+          remarks: string | null
+          service: string
+          stage: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          claim_date?: string
+          claim_type?: string
+          created_at?: string
+          file_name?: string | null
+          file_path?: string | null
+          id?: string
+          insurer?: string | null
+          remarks?: string | null
+          service: string
+          stage?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          claim_date?: string
+          claim_type?: string
+          created_at?: string
+          file_name?: string | null
+          file_path?: string | null
+          id?: string
+          insurer?: string | null
+          remarks?: string | null
+          service?: string
+          stage?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       conditions: {
         Row: {
           category: string
