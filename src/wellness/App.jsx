@@ -550,6 +550,13 @@ export default function App() {
           onLogout={handleLogout}
           user={user}
         />
+
+        <DrawerTrack
+          show={activeDrawer === 'track'}
+          onClose={closeDrawer}
+          onSubmitted={handleTrackSubmitted}
+          showToast={showToast}
+        />
       </div>
 
       {/* ── Right AI Chat Sidebar (desktop only) ── */}
